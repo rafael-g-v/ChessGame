@@ -1,50 +1,24 @@
 package controller;
 
+import model.ChessModel;
+
 public class GameController {
-    private Board board;
-    private GameView view;
-    private String currentPlayer;
+    private ChessModel model;
 
-    public GameController(Board board, GameView view) {
-        this.board = board;
-        this.view = view;
-        this.currentPlayer = "white";
+    public GameController() {
+        model = ChessModel.getInstance();
     }
 
-    public void startGame() {
-        while (!isGameOver()) {
-            view.displayBoard(board);
-            Position from = view.askForMove();
-            Position to = view.askForMove();
-            
-            if (tryMove(from, to)) {
-                switchPlayer();
-            } else {
-                view.showMessage("Movimento inválido. Tente novamente.");
-            }
-        }
-
-        view.showMessage("Fim de jogo!");
+    public boolean selecionarPeca(int row, int col) {
+        return model.selecionaPeca(row, col);
     }
 
-    private boolean tryMove(Position from, Position to) {
-        Piece piece = board.getPieceAt(from);
-        if (piece != null && piece.getColor().equals(currentPlayer)) {
-            List<Position> moves = piece.getPossibleMoves(board);
-            if (moves.contains(to)) {
-                board.movePiece(from, to);
-                return true;
-            }
-        }
-        return false;
+    public boolean selecionarDestino(int row, int col) {
+        return model.selecionaCasa(row, col);
     }
 
-    private void switchPlayer() {
-        currentPlayer = currentPlayer.equals("white") ? "black" : "white";
+    public boolean isTurnoBranco() {
+        return model.isWhiteTurn();
     }
 
-    private boolean isGameOver() {
-        // lógica para verificar xeque-mate ou empate
-        return false;
-    }
 }
