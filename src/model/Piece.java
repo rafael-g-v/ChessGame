@@ -1,18 +1,15 @@
 package model;
 
-public abstract class Piece {
-    protected String color;
-    protected Position position;
+abstract class Piece {
+    protected boolean isWhite;
 
-    public Piece(String color, Position position) {
-        this.color = color;
-        this.position = position;
+    public Piece(boolean isWhite) {
+        this.isWhite = isWhite;
     }
 
-    public abstract List<Position> getPossibleMoves(Board board);
+    public boolean isWhite() {
+        return isWhite;
+    }
 
-    public String getColor() { return color; }
-    public Position getPosition() { return position; }
-    public void setPosition(Position newPosition) { this.position = newPosition; }
+    public abstract boolean isValidMove(Position from, Position to, Board board);
 }
-
