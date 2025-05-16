@@ -41,10 +41,49 @@ public class ChessModelTest {
     }
 
     @Test
+    public void testReiBrancoEmChequePorBispo() {
+        Board board = new Board();
+        for (int r = 0; r < 8; r++)
+            for (int c = 0; c < 8; c++)
+                board.setPiece(r, c, null);
+
+        // Rei branco em d4 (4,3)
+        board.setPiece(4, 3, new King(true));
+
+        // Bispo preto em a7 (1,0) que ataca d4 diagonalmente
+        board.setPiece(1, 0, new Bishop(false));
+
+        ChessModel model = ChessModel.getInstance();
+        model.setBoard(board);
+
+        assertTrue(model.isInCheck(true));
+        assertFalse(model.isInCheck(false));
+    }
+
+    @Test
+    public void testReiBrancoEmChequeDuplo() {
+        Board board = new Board();
+        for (int r = 0; r < 8; r++)
+            for (int c = 0; c < 8; c++)
+                board.setPiece(r, c, null);
+
+        // Rei branco em e4 (4,4)
+        board.setPiece(4, 4, new King(true));
+
+        // Torre preta em e8 (0,4)
+        board.setPiece(0, 4, new Rook(false));
+        // Bispo preto em h7 (1,7), ataca diagonal para e4
+        board.setPiece(1, 7, new Bishop(false));
+
+        ChessModel model = ChessModel.getInstance();
+        model.setBoard(board);
+
+        assertTrue(model.isInCheck(true));
+    }
+
+    @Test
     public void testReiProtegidoPorPeao() {
         Board board = new Board();
-
-        // Limpa o tabuleiro
         for (int row = 0; row < 8; row++)
             for (int col = 0; col < 8; col++)
                 board.setPiece(row, col, null);
@@ -60,5 +99,84 @@ public class ChessModelTest {
         model.setBoard(board);
 
         assertFalse(model.isInCheck(true));  // Rei branco protegido, não está em cheque
+    }
+
+    @Test
+    public void testNaoPodeMoverOutraPecaSeReiEmCheque() {
+        Board board = new Board();
+        for (int r = 0; r < 8; r++)
+            for (int c = 0; c < 8; c++)
+                board.setPiece(r, c, null);
+
+        // Rei branco em e1
+        board.setPiece(7, 4, new King(true));
+        // Peão branco em e2
+        // board.setPiece(6, 4, new Pawn(true));
+        // Torre preta em e8 ameaçando rei pela coluna
+        board.setPiece(0, 4, new Rook(false));
+
+        ChessModel model = ChessModel.getInstance();
+        model.setBoard(board);
+
+        // Rei branco está em cheque
+        assertTrue(model.isInCheck(true));
+
+        // Tentativa de mover peão branco que não tira cheque
+        model.selecionaPeca(6, 4);
+        assertFalse(model.selecionaCasa(5, 4));
+
+        // Pode mover o rei para fora do cheque
+        model.selecionaPeca(7, 4);
+        assertTrue(model.selecionaCasa(6, 3));
+    }
+
+    @Test
+    public void testPodeBloquearChequeMovendoOutraPeca() {
+        Board board = new Board();
+        for (int r = 0; r < 8; r++)
+            for (int c = 0; c < 8; c++)
+                board.setPiece(r, c, null);
+
+        // Rei branco em e1 (7,4)
+        board.setPiece(7, 4, new King(true));
+        // Peão branco em d2 (6,3)
+        board.setPiece(6, 3, new Pawn(true));
+        // Torre preta em e8 (0,4)
+        board.setPiece(0, 4, new Rook(false));
+
+
+        ChessModel model = ChessModel.getInstance();
+        model.setBoard(board);
+
+        assertTrue(model.isInCheck(true));
+
+        model.selecionaPeca(6, 3);
+        assertTrue(model.selecionaCasa(5, 4));  // captura que bloqueia o cheque
+    }
+
+    @Test
+    public void testNaoPodeMoverOutraPecaQueNaoRemoveCheque() {
+        Board board = new Board();
+        for (int r = 0; r < 8; r++)
+            for (int c = 0; c < 8; c++)
+                board.setPiece(r, c, null);
+
+        // Rei branco em e1 (7,4)
+        board.setPiece(7, 4, new King(true));
+        // Peão branco em a2 (6,0) longe do cheque
+        board.setPiece(6, 0, new Pawn(true));
+        // Torre preta em e8 (0,4)
+        board.setPiece(0, 4, new Rook(false));
+
+        ChessModel model = ChessModel.getInstance();
+        model.setBoard(board);
+
+        assertTrue(model.isInCheck(true));
+
+        // Tenta mover peão longe que não remove cheque
+        model.selecionaPeca(6, 0);
+        
+        //FIXME: está dando problema
+        assertFalse(model.selecionaCasa(5, 0));
     }
 }

@@ -45,15 +45,11 @@ public class ChessModel {
 	    Piece piece = board.getPiece(selectedPiecePos.row, selectedPiecePos.col);
 	    
 	    if (piece.isValidMove(selectedPiecePos, target, board)) {
-	    	Piece captured = board.getPiece(target.row, target.col);
-
-	        board.movePiece(selectedPiecePos, target);	    	
-	        if (isInCheck(piece.isWhite())) {
-	        	board.movePiece(target, selectedPiecePos);
-	        	board.setPiece(target.row, target.col, captured);
-	        	return false;
+	        if (!canMoveToEscapeCheck(selectedPiecePos, target)) {
+	            return false;
 	        }
-	        
+
+	        board.movePiece(selectedPiecePos, target);
 	        selectedPiecePos = null;
 	        whiteTurn = !whiteTurn;
 	        return true;
@@ -90,6 +86,19 @@ public class ChessModel {
 	    }
 	    return null;
 	}
+	
+	public boolean canMoveToEscapeCheck(Position from, Position to) {
+	    Piece piece = board.getPiece(from.row, from.col);
+	    Piece captured = board.getPiece(to.row, to.col);
+
+	    board.movePiece(from, to);
+	    boolean stillInCheck = isInCheck(piece.isWhite());
+	    board.movePiece(to, from);
+	    board.setPiece(to.row, to.col, captured);
+
+	    return !stillInCheck;
+	}
+
 	
 	
 	public boolean isWhiteTurn() {
