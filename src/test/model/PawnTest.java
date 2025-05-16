@@ -8,13 +8,11 @@ public class PawnTest {
 
     private Board board;
     private Pawn whitePawn;
-    private Pawn blackPawn;
 
     @Before
     public void setUp() {
         board = new Board();
         whitePawn = new Pawn(true);
-        blackPawn = new Pawn(false);
     }
 
     @Test(timeout = 2000)
