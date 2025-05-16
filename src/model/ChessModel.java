@@ -17,6 +17,19 @@ public class ChessModel {
 	    return instance;
 	}
 	
+	public static void resetInstance() {
+        instance = null;
+    }
+	
+	public void setBoard(Board customBoard) {
+	    this.board = customBoard;
+	}
+	
+	public Board getBoard() {
+        return board;
+    }
+
+	
 	public boolean selecionaPeca(int row, int col) {
 	    Piece piece = board.getPiece(row, col);
 	    if (piece != null && piece.isWhite() == whiteTurn) {
