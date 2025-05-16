@@ -10,6 +10,9 @@ import org.junit.runners.Suite;
     PawnTest.class,
     BishopTest.class,
     QueenTest.class,
-    KingTest.class
+    KingTest.class,
+    PieceTest.class,
+    BoardTest.class,
+    PositionTest.class
 })
 public class AllPieceTests {}
