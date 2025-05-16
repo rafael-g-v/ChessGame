@@ -10,8 +10,8 @@ public class PawnTest {
     private Pawn whitePawn;
 
     @Before
-    public void setUp() {
-        board = new Board();
+    public void prepare() {
+        board = new Board(true);
         whitePawn = new Pawn(true);
     }
 
