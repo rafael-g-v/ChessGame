@@ -52,6 +52,10 @@ class Board {
         board[to.row][to.col] = piece;
         board[from.row][from.col] = null;
     }
+    
+    public void setPiece(int row, int col, Piece piece) {
+        board[row][col] = piece;
+    }
 
     public boolean isEmpty(int row, int col) {
         return board[row][col] == null;
