@@ -1,9 +1,0 @@
-/**
- * 
- */
-/**
- * 
- */
-module ChessGame {
-	requires junit;
-}

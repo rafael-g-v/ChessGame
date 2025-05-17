@@ -15,4 +15,5 @@ import org.junit.runners.Suite;
     BoardTest.class,
     PositionTest.class
 })
+
 public class AllPieceTests {}
