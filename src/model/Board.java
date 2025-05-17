@@ -3,9 +3,11 @@ package model;
 class Board {
     private Piece[][] board;
 
-    public Board() {
+    public Board(boolean empty) {
         board = new Piece[8][8];
-        setupInitialPosition();
+        if (!empty) {
+            setupInitialPosition();
+        }
     }
     
     private void setupInitialPosition() {

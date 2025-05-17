@@ -5,4 +5,5 @@
  * 
  */
 module ChessGame {
+	requires junit;
 }
