@@ -43,7 +43,14 @@ class Board {
         board[0][4] = new King(false);
         board[7][4] = new King(true);
     }
-
+    
+    public void clear() {
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                board[row][col] = null;
+            }
+        }
+    }
     
     public Piece getPiece(int row, int col) {
         return board[row][col];
@@ -53,6 +60,10 @@ class Board {
         Piece piece = board[from.row][from.col];
         board[to.row][to.col] = piece;
         board[from.row][from.col] = null;
+    }
+    
+    public void setPiece(int row, int col, Piece piece) {
+        board[row][col] = piece;
     }
 
     public boolean isEmpty(int row, int col) {
