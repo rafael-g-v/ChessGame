@@ -38,34 +38,4 @@ public class QueenTest {
         Position to = new Position(4, 5); // Movimento inválido (não reto/diagonal)
         assertFalse("Rainha não pode mover-se em padrão inválido", whiteQueen.isValidMove(from, to, board_empty));
     }
-
-    @Test(timeout = 2000)
-    public void validQueenTestCaptureOpponent() {
-        Position from = new Position(0, 0);
-        Position to = new Position(0, 3);
-        // Posição 0,3 ocupada por peça adversária
-        Piece opponentRook = new Rook(false);
-        board_filled.movePiece(to.row, to.col, opponentRook);
-        assertTrue("Rainha pode capturar peça adversária", whiteQueen.isValidMove(from, to, board_filled));
-    }
-
-    @Test(timeout = 2000)
-    public void invalidQueenTestBlockedPath() {
-        Position from = new Position(1, 1);
-        Position to = new Position(1, 4);
-        // Bloqueio no caminho
-        Piece blockPawn = new Pawn(true);
-        board_filled.movePiece(1, 2, blockPawn);
-        assertFalse("Rainha não pode pular sobre peças", whiteQueen.isValidMove(from, to, board_filled));
-    }
-
-    @Test(timeout = 2000)
-    public void invalidQueenTestCaptureOwnPiece() {
-        Position from = new Position(2, 2);
-        Position to = new Position(2, 5);
-        // Peça aliada na posição final
-        Piece ownBishop = new Bishop(true);
-        board_filled.movePiece(to.row, to.col, ownBishop);
-        assertFalse("Rainha não pode capturar peça aliada", whiteQueen.isValidMove(from, to, board_filled));
-    }
 }

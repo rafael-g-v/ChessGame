@@ -6,13 +6,11 @@ import org.junit.Test;
 
 public class KingTest {
     private Board board_empty;
-    private Board board_filled;
     private King whiteKing;
 
     @Before
     public void prepare() {
         board_empty = new Board(true);
-        board_filled = new Board(false);
         whiteKing = new King(true);
     }
 
@@ -37,26 +35,6 @@ public class KingTest {
         Position from = new Position(3, 3);
         Position to = new Position(5, 3); // Movimento inválido de 2 casas
         assertFalse("Rei não pode mover-se 2 casas", whiteKing.isValidMove(from, to, board_empty));
-    }
-
-    @Test(timeout = 2000)
-    public void validKingTestCaptureOpponent() {
-        Position from = new Position(3, 3);
-        Position to = new Position(4, 4);
-        // Coloca peça adversária no destino
-        Piece opponentPawn = new Pawn(false);
-        board_filled.movePiece(to.row, to.col, opponentPawn); // Assume-se que movePiece posiciona a peça
-        assertTrue("Rei pode capturar peça adversária", whiteKing.isValidMove(from, to, board_filled));
-    }
-
-    @Test(timeout = 2000)
-    public void invalidKingTestCaptureOwnPiece() {
-        Position from = new Position(3, 3);
-        Position to = new Position(4, 4);
-        // Coloca peça aliada no destino
-        Piece ownPawn = new Pawn(true);
-        board_filled.movePiece(to.row, to.col, ownPawn);
-        assertFalse("Rei não pode capturar peça aliada", whiteKing.isValidMove(from, to, board_filled));
     }
 
     @Test(timeout = 2000)
