@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+//Testa os movimentos válidos e inválidos do cavalo (Knight), testando seu movimento valido em formato L e invalido movendo reto
 public class KnightTest {
 
     private Board board_empty;
@@ -24,7 +25,7 @@ public class KnightTest {
         assertTrue("Cavalo deve se mover em L", whiteKnight.isValidMove(from, to, board_empty));
     }
 
-    // Testa se o cavalo tenta mover-se em linha reta, o que é inválido - Resultado esperado: false
+    // Testa se o cavalo tenta mover em linha reta, o que é inválido - Resultado esperado: false
     @Test(timeout = 2000)
     public void invalidKnightTestMoveStraight() {
         Position from = new Position(0, 1);
