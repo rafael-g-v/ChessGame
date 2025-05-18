@@ -11,11 +11,11 @@ public class GameController {
     }
 
     public boolean selecionarPeca(int row, int col) {
-        return model.selecionaPeca(row, col);
+        return model.selectTargetSquare(row, col);
     }
 
     public boolean selecionarDestino(int row, int col) {
-        return model.selecionaCasa(row, col);
+        return model.selectTargetSquare(row, col);
     }
 
     public boolean isTurnoBranco() {

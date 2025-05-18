@@ -1,16 +1,20 @@
 package model;
 
+/**
+ * Representa o tabuleiro de xadrez, composto por uma matriz 8x8 de peças.
+ */
 class Board {
     private Piece[][] board;
 
+    // Construtor. Se o parâmetro "empty" for falso, inicializa o tabuleiro com a posição padrão.
     public Board(boolean empty) {
         board = new Piece[8][8];
         if (!empty) {
             setupInitialPosition();
         }
     }
-    
-    // Adicionar as pecas ao tabuleiro
+
+    // Preenche o tabuleiro com a configuração inicial padrão do xadrez.
     private void setupInitialPosition() {
         // Peões
         for (int i = 0; i < 8; i++) {
@@ -44,7 +48,8 @@ class Board {
         board[0][4] = new King(false);
         board[7][4] = new King(true);
     }
-    
+
+    // Remove todas as peças do tabuleiro, deixando todas as casas vazias.
     public void clear() {
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
@@ -52,21 +57,27 @@ class Board {
             }
         }
     }
-    
+
+    // Retorna a peça presente na posição indicada (linha e coluna).
     public Piece getPiece(int row, int col) {
         return board[row][col];
     }
 
+    // Move uma peça da posição "from" para a posição "to".
+    // A posição de origem fica vazia após o movimento.
     public void movePiece(Position from, Position to) {
         Piece piece = board[from.row][from.col];
         board[to.row][to.col] = piece;
         board[from.row][from.col] = null;
     }
-    
+
+    // Coloca uma peça na posição indicada (linha e coluna).
+    // Substitui qualquer peça anterior naquela casa.
     public void setPiece(int row, int col, Piece piece) {
         board[row][col] = piece;
     }
 
+    // Retorna true se a casa na posição indicada estiver vazia.
     public boolean isEmpty(int row, int col) {
         return board[row][col] == null;
     }
