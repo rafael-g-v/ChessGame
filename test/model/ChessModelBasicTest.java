@@ -1,12 +1,12 @@
 package model;
 
-import org.junit.Assert.*;
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ChessModelBasicTest {
 
-    @BeforeEach
+    @Before
     public void setup() {
         ChessModel.resetInstance();
     }
