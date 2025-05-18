@@ -1,5 +1,9 @@
 # ChessGame
 
+Dante Navaza : 2321406
+Breno Andrade : 2320363
+Rafael Chesz : 2320469
+
 O objetivo deste trabalho é construir um programa que permita que duas pessoas 
 possam jogar, em um único computador, partidas de xadrez. Não se trata, portanto, de 
 um software para jogar xadrez contra um computador, muito menos de um sistema que 
