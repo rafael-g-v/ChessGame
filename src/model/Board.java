@@ -1,8 +1,6 @@
 package model;
 
-/**
- * Representa o tabuleiro de xadrez, composto por uma matriz 8x8 de peças.
- */
+// Representa o tabuleiro de xadrez, composto por uma matriz 8x8 de peças.
 class Board {
     private Piece[][] board;
 
