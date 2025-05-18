@@ -4,6 +4,15 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.Before;
 
+/**
+ * Classe de teste para a peça Bispo (Bishop).
+ * Verifica as regras de movimento do bispo, que incluem:
+ * - Movimento apenas nas diagonais
+ * - Não pode pular sobre outras peças
+ * - Pode capturar peças adversárias
+ * - Não pode capturar peças aliadas
+ */
+
 
 public class KingTest {
 	
