@@ -21,8 +21,8 @@ public class KingTest {
 
     @Before
     public void prepare() {
-    	Board board_empty = new Board(true);
-    	King whiteKing = new King(true);
+    	board_empty = new Board(true);
+    	whiteKing = new King(true);
     }
 
     @Test(timeout = 2000)

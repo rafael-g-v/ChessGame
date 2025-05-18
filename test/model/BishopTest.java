@@ -14,7 +14,6 @@ import org.junit.Test;
  */
 public class BishopTest {
     private Board board_empty;
-    private Board board_filled;
     private Bishop whiteBishop;
 
     /**
@@ -25,7 +24,6 @@ public class BishopTest {
     @Before
     public void prepare() {
         board_empty = new Board(true);
-        board_filled = new Board(false);
         whiteBishop = new Bishop(true);
     }
 

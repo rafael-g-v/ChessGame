@@ -14,7 +14,6 @@ import org.junit.Test;
  */
 public class QueenTest {
     private Board board_empty;
-    private Board board_filled;
     private Queen whiteQueen;
 
     /**
@@ -25,7 +24,6 @@ public class QueenTest {
     @Before
     public void prepare() {
         board_empty = new Board(true);
-        board_filled = new Board(false);
         whiteQueen = new Queen(true);
     }
 
