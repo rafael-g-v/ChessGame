@@ -12,7 +12,6 @@ public class ChessModelMovementTest {
     }
 
     @Test(timeout = 2000)
-    @Test(timeout = 2000)
     public void testNaoPodeMoverOutraPecaSeReiEmCheque() {
         Board board = new Board(true);
         board.clear();
@@ -33,7 +32,6 @@ public class ChessModelMovementTest {
     }
 
     @Test(timeout = 2000)
-    @Test(timeout = 2000)
     public void testPodeBloquearChequeMovendoOutraPeca() {
         Board board = new Board(true);
         board.clear();
@@ -52,7 +50,6 @@ public class ChessModelMovementTest {
         assertFalse(model.isInCheck(true));
     }
     
-    @Test(timeout = 2000)
     @Test(timeout = 2000)
     public void testMovimentoColocaReiPretoEmCheque() {
         Board board = new Board(true);
