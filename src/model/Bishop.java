@@ -1,48 +1,38 @@
 package model;
 
 class Bishop extends Piece {
-    
-    /**
-     * Constrói um Bispo.
-     * @param isWhite true para peça branca, false para preta
-     */
+
+    // Constrói um bispo branco ou preto
     public Bishop(boolean isWhite) {
         super(isWhite);
     }
 
-    /**
-     * Verifica se um movimento é válido para o Bispo.
-     * @param from Posição inicial
-     * @param to Posição final
-     * @param board Tabuleiro atual
-     * @return true se o movimento é válido
-     */
+    // Recebe: posição inicial, posição final e o tabuleiro
+    // Retorna: true se o movimento do bispo for válido (diagonal, caminho livre, e sem capturar peça aliada)
     @Override
     public boolean isValidMove(Position from, Position to, Board board) {
-        // Calcula diferenças nas coordenadas
         int dx = Math.abs(from.row - to.row);
         int dy = Math.abs(from.col - to.col);
 
-        // Bispo só move na diagonal (dx deve ser igual a dy)
+        // Movimento deve ser na diagonal
         if (dx != dy) return false;
 
-        // Determina direção do movimento (1 ou -1 para cada eixo)
         int rowStep = (to.row > from.row) ? 1 : -1;
         int colStep = (to.col > from.col) ? 1 : -1;
 
-        // Verifica peças no caminho
         int currentRow = from.row + rowStep;
         int currentCol = from.col + colStep;
-        
-        while (currentRow != to.row) {  
+
+        // Verifica se há peças no caminho
+        while (currentRow != to.row) {
             if (!board.isEmpty(currentRow, currentCol)) {
-                return false;  // Caminho bloqueado
+                return false;
             }
             currentRow += rowStep;
             currentCol += colStep;
         }
 
-        // Verifica peça no destino
+        // Permite o movimento se o destino estiver vazio ou ocupado por peça adversária
         Piece destinationPiece = board.getPiece(to.row, to.col);
         return destinationPiece == null || destinationPiece.isWhite() != this.isWhite;
     }

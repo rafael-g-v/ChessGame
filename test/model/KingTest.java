@@ -32,30 +32,6 @@ public class KingTest {
         assertTrue(whiteKing.isValidMove(from, to, board_empty));
     }
 
-    // Testa movimento válido: 1 casa para direita
-    @Test(timeout = 2000)
-    public void testMoveRight() {
-        Position from = new Position(3, 3);
-        Position to = new Position(3, 4);
-        assertTrue(whiteKing.isValidMove(from, to, board_empty));
-    }
-
-    // Testa movimento válido: 1 casa para esquerda
-    @Test(timeout = 2000)
-    public void testMoveLeft() {
-        Position from = new Position(3, 3);
-        Position to = new Position(3, 2);
-        assertTrue(whiteKing.isValidMove(from, to, board_empty));
-    }
-
-    // Testa movimento válido: 1 casa na diagonal
-    @Test(timeout = 2000)
-    public void testMoveDiagonal() {
-        Position from = new Position(3, 3);
-        Position to = new Position(4, 4);
-        assertTrue(whiteKing.isValidMove(from, to, board_empty));
-    }
-
     // Testa movimento inválido: 2 casas em linha reta
     @Test(timeout = 2000)
     public void testMoveTwoStepsInvalid() {

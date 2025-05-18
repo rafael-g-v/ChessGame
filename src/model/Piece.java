@@ -3,23 +3,17 @@ package model;
 abstract class Piece {
     protected boolean isWhite;
 
-    /**
-     * Construtor base para todas as peças.
-     * @param isWhite true para peça branca, false para preta
-     */
+    // Construtor base para todas as peças, define se é branca ou preta
     public Piece(boolean isWhite) {
         this.isWhite = isWhite;
     }
-    
+
+    // Retorna true se a peça for branca
     public boolean isWhite() {
         return isWhite;
     }
 
-    /**
-     * @param from Posição de origem
-     * @param to Posição de destino
-     * @param board Tabuleiro atual
-     * @return true se o movimento é válido para a peça
-     */
+    // Recebe: posição inicial, posição final e o tabuleiro
+    // Retorna: true se o movimento for válido segundo as regras da peça
     public abstract boolean isValidMove(Position from, Position to, Board board);
 }
