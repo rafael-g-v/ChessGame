@@ -19,9 +19,7 @@ public class ChessModelCheckTest {
         ChessModel.resetInstance();
     }
 
-    /**
-     * Testa se o rei branco está em cheque quando uma torre preta está alinhada na mesma coluna.
-     */
+    // Testa se o rei branco está em cheque quando uma torre preta está alinhada na mesma coluna.
     @Test(timeout = 2000)
     public void whiteKingInCheckFromRook() {
         Board board = new Board(true);
@@ -36,9 +34,7 @@ public class ChessModelCheckTest {
         assertFalse("Rei preto não deve estar em cheque", model.isInCheck(false));
     }
 
-    /**
-     * Testa se o rei branco está em cheque quando um bispo preto está posicionado em uma diagonal de ataque.
-     */
+    // Testa se o rei branco está em cheque quando um bispo preto está posicionado em uma diagonal de ataque.
     @Test(timeout = 2000)
     public void whiteKingInCheckFromBishop() {
         Board board = new Board(true);
@@ -53,9 +49,7 @@ public class ChessModelCheckTest {
         assertFalse("Rei preto não deve estar em cheque", model.isInCheck(false));
     }
 
-    /**
-     * Testa se o rei branco está em cheque duplo, ou seja, sendo atacado simultaneamente por dois adversários.
-     */
+     // Testa se o rei branco está em cheque duplo, ou seja, sendo atacado simultaneamente por dois adversários.
     @Test(timeout = 2000)
     public void whiteKingInDoubleCheck() {
         Board board = new Board(true);
@@ -70,9 +64,8 @@ public class ChessModelCheckTest {
         assertTrue("Rei branco deve estar em cheque duplo (torre e bispo)", model.isInCheck(true));
     }
 
-    /**
-     * Testa se o rei branco não está em cheque quando um peão aliado bloqueia a linha de ataque da torre adversária.
-     */
+ 
+     // Testa se o rei branco não está em cheque quando um peão aliado bloqueia a linha de ataque da torre adversária.
     @Test(timeout = 2000)
     public void whiteKingProtectedByPawn() {
         Board board = new Board(true);
