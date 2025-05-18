@@ -3,6 +3,7 @@ package model;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
+//Testa a igualdade de posições e a validação de coordenadas no tabuleiro.
 public class PositionTest {
     
     // Testa se duas posições com as mesmas coordenadas são consideradas iguais - Resultado esperado: true

@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+//Testa movimentos simples do peão branco: avanço válido e tentativa e recuo (invalido).
 public class PawnTest {
 
     private Board board;

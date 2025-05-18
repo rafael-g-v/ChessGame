@@ -3,6 +3,7 @@ package model;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+//Testa a identificação da cor (branco/preto) de uma peça.
 public class PieceTest {
 
     // Testa se uma peça branca retorna true para isWhite()

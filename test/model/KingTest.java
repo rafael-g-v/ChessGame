@@ -4,57 +4,77 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.Before;
 
-/**
- * Classe de teste para a peça Bispo (Bishop).
- * Verifica as regras de movimento do bispo, que incluem:
- * - Movimento apenas nas diagonais
- * - Não pode pular sobre outras peças
- * - Pode capturar peças adversárias
- * - Não pode capturar peças aliadas
- */
-
-
+// Testa os movimentos válidos e inválidos do rei (King), incluindo limites do tabuleiro.
 public class KingTest {
-	
-	private Board board_empty;
+
+    private Board board_empty;
     private King whiteKing;
 
     @Before
     public void prepare() {
-    	board_empty = new Board(true);
-    	whiteKing = new King(true);
+        board_empty = new Board(true);
+        whiteKing = new King(true);
     }
 
+    // Testa movimento válido: 1 casa para baixo
     @Test(timeout = 2000)
-    public void validKingTestSingleStep() {
+    public void testMoveDown() {
         Position from = new Position(3, 3);
-        Position toDown = new Position(4, 3);    // 1 para baixo
-        Position toUp = new Position(2, 3);      // 1 para cima
-        Position toRight = new Position(3, 4);   // 1 para direita
-        Position toLeft = new Position(3, 2);    // 1 para esquerda
-        Position toDiagonal = new Position(4, 4);// 1 na diagonal
-
-        assertTrue("Rei deve mover-se 1 casa para baixo", whiteKing.isValidMove(from, toDown, board_empty));
-        assertTrue("Rei deve mover-se 1 casa para cima", whiteKing.isValidMove(from, toUp, board_empty));
-        assertTrue("Rei deve mover-se 1 casa para direita", whiteKing.isValidMove(from, toRight, board_empty));
-        assertTrue("Rei deve mover-se 1 casa para esquerda", whiteKing.isValidMove(from, toLeft, board_empty));
-        assertTrue("Rei deve mover-se 1 casa na diagonal", whiteKing.isValidMove(from, toDiagonal, board_empty));
+        Position to = new Position(4, 3);
+        assertTrue(whiteKing.isValidMove(from, to, board_empty));
     }
 
+    // Testa movimento válido: 1 casa para cima
     @Test(timeout = 2000)
-    public void invalidKingTestTwoSteps() {
+    public void testMoveUp() {
         Position from = new Position(3, 3);
-        Position to = new Position(5, 3); // Movimento inválido de 2 casas
-        assertFalse("Rei não pode mover-se 2 casas", whiteKing.isValidMove(from, to, board_empty));
+        Position to = new Position(2, 3);
+        assertTrue(whiteKing.isValidMove(from, to, board_empty));
     }
 
+    // Testa movimento válido: 1 casa para direita
     @Test(timeout = 2000)
-    public void edgeCaseKingTestCornerMove() {
-        Position fromCorner = new Position(7, 7);
-        Position toValid = new Position(7, 6);   // Movimento válido na borda
-        Position toInvalid = new Position(5, 7); // Movimento inválido na borda
+    public void testMoveRight() {
+        Position from = new Position(3, 3);
+        Position to = new Position(3, 4);
+        assertTrue(whiteKing.isValidMove(from, to, board_empty));
+    }
 
-        assertTrue("Rei deve mover-se na borda", whiteKing.isValidMove(fromCorner, toValid, board_empty));
-        assertFalse("Rei não pode mover-se 2 casas na borda", whiteKing.isValidMove(fromCorner, toInvalid, board_empty));
+    // Testa movimento válido: 1 casa para esquerda
+    @Test(timeout = 2000)
+    public void testMoveLeft() {
+        Position from = new Position(3, 3);
+        Position to = new Position(3, 2);
+        assertTrue(whiteKing.isValidMove(from, to, board_empty));
+    }
+
+    // Testa movimento válido: 1 casa na diagonal
+    @Test(timeout = 2000)
+    public void testMoveDiagonal() {
+        Position from = new Position(3, 3);
+        Position to = new Position(4, 4);
+        assertTrue(whiteKing.isValidMove(from, to, board_empty));
+    }
+
+    // Testa movimento inválido: 2 casas em linha reta
+    @Test(timeout = 2000)
+    public void testMoveTwoStepsInvalid() {
+        Position from = new Position(3, 3);
+        Position to = new Position(5, 3);
+        assertFalse(whiteKing.isValidMove(from, to, board_empty));
+    }
+
+    // Testa movimento válido na borda do tabuleiro
+    @Test(timeout = 2000)
+    public void testCornerMoveValid() {
+        Position from = new Position(7, 7);
+        Position to = new Position(7, 6);
+        assertTrue(whiteKing.isValidMove(from, to, board_empty));
+    }
+
+    // Testa se criar uma posição com coordenadas inválidas gera IllegalArgumentException
+    @Test(expected = IllegalArgumentException.class, timeout = 2000)
+    public void testInvalidPositionCoordinates() {
+        new Position(5, 8); // coluna 8 é inválida (fora do intervalo 0–7)
     }
 }

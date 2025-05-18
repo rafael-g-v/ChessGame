@@ -5,7 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-//Testa os movimentos da torre (Rook): horizontal/vertical, bloqueios e restrições.
+//Testa os movimentos da torre (Rook): horizontal e vertical, bloqueios e restrições.
 public class RookTest {
 
     private Board board_empty;
