@@ -1,9 +1,9 @@
-//
 package controller;
 
 import model.ChessModel;
 
 public class GameController {
+	/*
     private ChessModel model;
 
     public GameController() {
@@ -22,4 +22,5 @@ public class GameController {
         return model.isWhiteTurn();
     }
 
+	 */
 }
