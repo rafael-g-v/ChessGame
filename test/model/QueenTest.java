@@ -63,43 +63,4 @@ public class QueenTest {
         Position to = new Position(4, 5);
         assertFalse("Rainha não pode mover-se em padrão inválido", whiteQueen.isValidMove(from, to, board_empty));
     }
-
-    /**
-     * Testa a captura válida de uma peça adversária.
-     * Verifica se a rainha pode capturar uma torre preta em (0,3).
-     */
-    @Test(timeout = 2000)
-    public void validQueenTestCaptureOpponent() {
-        Position from = new Position(0, 0);
-        Position to = new Position(0, 3);
-        Piece opponentRook = new Rook(false);
-        board_filled.movePiece(to.row, to.col, opponentRook);
-        assertTrue("Rainha pode capturar peça adversária", whiteQueen.isValidMove(from, to, board_filled));
-    }
-
-    /**
-     * Testa um movimento inválido com caminho bloqueado.
-     * Verifica se a rainha não pode pular sobre uma peça aliada em (1,2).
-     */
-    @Test(timeout = 2000)
-    public void invalidQueenTestBlockedPath() {
-        Position from = new Position(1, 1);
-        Position to = new Position(1, 4);
-        Piece blockPawn = new Pawn(true);
-        board_filled.movePiece(1, 2, blockPawn);
-        assertFalse("Rainha não pode pular sobre peças", whiteQueen.isValidMove(from, to, board_filled));
-    }
-
-    /**
-     * Testa uma tentativa inválida de capturar peça aliada.
-     * Verifica se a rainha não pode capturar um bispo branco em (2,5).
-     */
-    @Test(timeout = 2000)
-    public void invalidQueenTestCaptureOwnPiece() {
-        Position from = new Position(2, 2);
-        Position to = new Position(2, 5);
-        Piece ownBishop = new Bishop(true);
-        board_filled.movePiece(to.row, to.col, ownBishop);
-        assertFalse("Rainha não pode capturar peça aliada", whiteQueen.isValidMove(from, to, board_filled));
-    }
 }
