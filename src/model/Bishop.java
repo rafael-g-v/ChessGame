@@ -34,7 +34,7 @@ class Bishop extends Piece {
         int currentRow = from.row + rowStep;
         int currentCol = from.col + colStep;
         
-        while (currentRow != to.row) {  // && currentCol != to.col (redundante)
+        while (currentRow != to.row) {  
             if (!board.isEmpty(currentRow, currentCol)) {
                 return false;  // Caminho bloqueado
             }
