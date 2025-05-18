@@ -1,17 +1,17 @@
 package model;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ChessModelCheckTest {
 
-    @BeforeEach
+    @Before
     public void setup() {
         ChessModel.resetInstance();
     }
 
-    @Test
+    @Test(timeout = 2000)
     public void testReiBrancoEmChequePorTorre() {
         Board board = new Board(true);
         board.clear();
@@ -24,7 +24,7 @@ public class ChessModelCheckTest {
         assertFalse(model.isInCheck(false));
     }
 
-    @Test
+    @Test(timeout = 2000)
     public void testReiBrancoEmChequePorBispo() {
         Board board = new Board(true);
         board.clear();
@@ -37,7 +37,7 @@ public class ChessModelCheckTest {
         assertFalse(model.isInCheck(false));
     }
 
-    @Test
+    @Test(timeout = 2000)
     public void testReiBrancoEmChequeDuplo() {
         Board board = new Board(true);
         board.clear();
@@ -50,7 +50,7 @@ public class ChessModelCheckTest {
         assertTrue(model.isInCheck(true));
     }
 
-    @Test
+    @Test(timeout = 2000)
     public void testReiProtegidoPorPeao() {
         Board board = new Board(true);
         board.clear();

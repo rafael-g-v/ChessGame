@@ -1,17 +1,17 @@
 package model;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ChessModelBasicTest {
 
-    @BeforeEach
+    @Before
     public void setup() {
         ChessModel.resetInstance();
     }
 
-    @Test
+    @Test(timeout = 2000)
     public void testReiNaoEstaEmChequeInicialmente() {
         ChessModel model = ChessModel.getInstance();
         assertFalse(model.isInCheck(true));  // Rei branco não está em cheque

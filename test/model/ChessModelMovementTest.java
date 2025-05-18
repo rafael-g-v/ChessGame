@@ -1,17 +1,17 @@
 package model;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ChessModelMovementTest {
 
-    @BeforeEach
+    @Before
     public void setup() {
         ChessModel.resetInstance();
     }
 
-    @Test
+    @Test(timeout = 2000)
     public void testNaoPodeMoverOutraPecaSeReiEmCheque() {
         Board board = new Board(true);
         board.clear();
@@ -31,7 +31,7 @@ public class ChessModelMovementTest {
         assertTrue(model.selecionaCasa(7, 3));
     }
 
-    @Test
+    @Test(timeout = 2000)
     public void testPodeBloquearChequeMovendoOutraPeca() {
         Board board = new Board(true);
         board.clear();
@@ -50,7 +50,7 @@ public class ChessModelMovementTest {
         assertFalse(model.isInCheck(true));
     }
     
-    @Test
+    @Test(timeout = 2000)
     public void testMovimentoColocaReiPretoEmCheque() {
         Board board = new Board(true);
         board.clear();  // limpar o tabuleiro
