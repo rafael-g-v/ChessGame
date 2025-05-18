@@ -1,17 +1,19 @@
 package model;
 
 import static org.junit.Assert.*;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.Before;
+
 
 public class KingTest {
-    private Board board_empty;
+	
+	private Board board_empty;
     private King whiteKing;
 
     @Before
     public void prepare() {
-        board_empty = new Board(true);
-        whiteKing = new King(true);
+    	Board board_empty = new Board(true);
+    	King whiteKing = new King(true);
     }
 
     @Test(timeout = 2000)

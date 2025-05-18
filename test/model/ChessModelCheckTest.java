@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+
 public class ChessModelCheckTest {
 
     @Before
@@ -12,7 +13,7 @@ public class ChessModelCheckTest {
     }
 
     @Test(timeout = 2000)
-    public void testReiBrancoEmChequePorTorre() {
+    public void testWhiteKingInCheckFromTower() {
         Board board = new Board(true);
         board.clear();
         board.setPiece(7, 4, new King(true));
@@ -25,7 +26,7 @@ public class ChessModelCheckTest {
     }
 
     @Test(timeout = 2000)
-    public void testReiBrancoEmChequePorBispo() {
+    public void testWhiteKingInCheckFromBishop() {
         Board board = new Board(true);
         board.clear();
         board.setPiece(4, 3, new King(true));
@@ -38,7 +39,7 @@ public class ChessModelCheckTest {
     }
 
     @Test(timeout = 2000)
-    public void testReiBrancoEmChequeDuplo() {
+    public void testWhiteKingInDoubleCheck() {
         Board board = new Board(true);
         board.clear();
         board.setPiece(4, 4, new King(true));
@@ -51,7 +52,7 @@ public class ChessModelCheckTest {
     }
 
     @Test(timeout = 2000)
-    public void testReiProtegidoPorPeao() {
+    public void testKingProtectedByPawn() {
         Board board = new Board(true);
         board.clear();
         board.setPiece(7, 4, new King(true));

@@ -12,7 +12,7 @@ public class ChessModelBasicTest {
     }
 
     @Test(timeout = 2000)
-    public void testReiNaoEstaEmChequeInicialmente() {
+    public void testKingNotInCheckInitially() {
         ChessModel model = ChessModel.getInstance();
         assertFalse(model.isInCheck(true));  // Rei branco não está em cheque
         assertFalse(model.isInCheck(false)); // Rei preto não está em cheque
