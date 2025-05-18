@@ -10,6 +10,7 @@ class Board {
         }
     }
     
+    // Adicionar as pecas ao tabuleiro
     private void setupInitialPosition() {
         // Peões
         for (int i = 0; i < 8; i++) {

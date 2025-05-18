@@ -15,6 +15,7 @@ public class KnightTest {
         whiteKnight = new Knight(true);
     }
 
+    // Testa se o cavalo pode realizar um movimento em "L" válido (2 para frente, 1 para o lado) - Resultado esperado: true
     @Test(timeout = 2000)
     public void validKnightTestMoveLShape() {
         Position from = new Position(0, 1); 
@@ -23,6 +24,7 @@ public class KnightTest {
         assertTrue("Cavalo deve se mover em L", whiteKnight.isValidMove(from, to, board_empty));
     }
 
+    // Testa se o cavalo tenta mover-se em linha reta, o que é inválido - Resultado esperado: false
     @Test(timeout = 2000)
     public void invalidKnightTestMoveStraight() {
         Position from = new Position(0, 1);
