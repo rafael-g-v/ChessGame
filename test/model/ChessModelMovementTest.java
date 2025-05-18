@@ -36,11 +36,11 @@ public class ChessModelMovementTest {
 
         assertTrue("Rei branco deveria estar em cheque", model.isInCheck(true));
 
-        model.selecionaPeca(6, 3); // Seleciona peão
-        assertFalse("Não deveria ser possível mover outra peça enquanto o rei está em cheque", model.selecionaCasa(5, 3));
+        model.selectPiece(6, 3); // Seleciona peão
+        assertFalse("Não deveria ser possível mover outra peça enquanto o rei está em cheque", model.selectTargetSquare(5, 3));
 
-        model.selecionaPeca(7, 4); // Seleciona rei
-        assertTrue("Rei deve poder mover-se para sair do cheque", model.selecionaCasa(7, 3));
+        model.selectPiece(7, 4); // Seleciona rei
+        assertTrue("Rei deve poder mover-se para sair do cheque", model.selectTargetSquare(7, 3));
     }
 
     /**
@@ -60,8 +60,8 @@ public class ChessModelMovementTest {
 
         assertTrue("Rei branco deveria estar em cheque", model.isInCheck(true));
 
-        model.selecionaPeca(6, 3); // Seleciona bispo
-        assertTrue("Deveria ser possível mover o bispo para bloquear o cheque", model.selecionaCasa(5, 4));
+        model.selectPiece(6, 3); // Seleciona bispo
+        assertTrue("Deveria ser possível mover o bispo para bloquear o cheque", model.selectTargetSquare(5, 4));
 
         assertFalse("Rei branco não deveria mais estar em cheque após bloqueio", model.isInCheck(true));
     }
@@ -81,18 +81,18 @@ public class ChessModelMovementTest {
         ChessModel model = ChessModel.getInstance();
         model.setBoard(board);
 
-        model.selecionaPeca(7, 3); // Seleciona dama branca
-        model.selecionaCasa(6, 4); // Move dama para alinhar com o rei
+        model.selectPiece(7, 3); // Seleciona dama branca
+        model.selectTargetSquare(6, 4); // Move dama para alinhar com o rei
 
         assertTrue("Rei preto deveria estar em cheque após movimento da dama", model.isInCheck(false));
 
-        model.selecionaPeca(0, 4); // Seleciona rei preto
-        model.selecionaCasa(0, 5); // Move rei preto para sair do cheque
+        model.selectPiece(0, 4); // Seleciona rei preto
+        model.selectTargetSquare(0, 5); // Move rei preto para sair do cheque
 
         assertFalse("Rei preto não deveria mais estar em cheque após mover-se", model.isInCheck(false));
 
-        model.selecionaPeca(6, 4); // Seleciona dama branca novamente
-        model.selecionaCasa(5, 5); // Move para nova linha de ataque
+        model.selectPiece(6, 4); // Seleciona dama branca novamente
+        model.selectTargetSquare(5, 5); // Move para nova linha de ataque
 
         assertTrue("Rei preto deveria estar em cheque novamente após novo movimento da dama", model.isInCheck(false));
     }
