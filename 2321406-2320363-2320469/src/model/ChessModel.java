@@ -121,4 +121,17 @@ public class ChessModel {
     public boolean isWhiteTurn() {
         return whiteTurn;
     }
+    
+    public String getPieceCode(int row, int col) {
+        Piece piece = board.getPiece(row, col);
+        if (piece == null) return null;
+
+        String color = piece.isWhite() ? "w" : "b";
+        String type = piece.getClass().getSimpleName().toLowerCase().charAt(0) + "";
+
+        // Corrige "k" para Knight
+        if (piece.getClass().getSimpleName().equals("Knight")) type = "n";
+
+        return color + type;
+    }
 }
