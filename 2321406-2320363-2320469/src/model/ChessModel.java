@@ -136,5 +136,62 @@ public class ChessModel {
 
         return cor + tipo;
     }
+    
+    /**
+     * Verifica se o jogador da vez está em situação de xeque-mate.
+     * Para isso, primeiro verifica se o rei está em cheque.
+     * Se estiver, e se não houver nenhum movimento legal que possa livrar o jogador do cheque,
+     * então a partida terminou em xeque-mate.
+     * */
+    public boolean isCheckMate() {
+        boolean isWhite = whiteTurn;
+        if (!isInCheck(isWhite)) {
+            return false;
+        }
+        return !hasAnyLegalMove(isWhite);
+    }
+
+    /**
+     * Verifica se o jogador da vez está em situação de afogamento (stalemate).
+     * Isso ocorre quando o jogador não está em cheque, mas também não possui
+     * nenhum movimento legal possível — o que caracteriza um empate.
+     */
+    public boolean isStalelMate() {
+        boolean isWhite = whiteTurn;
+        if (isInCheck(isWhite)) {
+            return false;
+        }
+        return !hasAnyLegalMove(isWhite);
+    }
+
+    /**
+     * Verifica se o jogador da vez possui ao menos um movimento legal disponível.
+     * Percorre todas as peças do jogador no tabuleiro, testando todos os movimentos possíveis.
+     * Se existir ao menos um movimento válido que não coloque o próprio rei em cheque,
+     * então o jogador ainda pode jogar.
+     */
+    private boolean hasAnyLegalMove(boolean isWhite) {
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                Piece piece = board.getPiece(row, col);
+                if (piece != null && piece.isWhite() == isWhite) {
+                    Position from = new Position(row, col);
+                    for (int toRow = 0; toRow < 8; toRow++) {
+                        for (int toCol = 0; toCol < 8; toCol++) {
+                            Position to = new Position(toRow, toCol);
+                            if (piece.isValidMove(from, to, board)) {
+                                if (canMoveToEscapeCheck(from, to)) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    
+    
 
 }
