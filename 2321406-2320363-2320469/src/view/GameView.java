@@ -10,8 +10,8 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 
 public class GameView extends JPanel {
-    private static final int TILE_SIZE = 80;
-    private static final int BOARD_SIZE = 8;
+    private static int TILE_SIZE = 80;
+    private static int BOARD_SIZE = 8;
 
     private ChessModel model;
     private Image[] images;
