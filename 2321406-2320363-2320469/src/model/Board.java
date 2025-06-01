@@ -56,8 +56,11 @@ class Board {
         }
     }
 
-    // Retorna a peça presente na posição indicada (linha e coluna).
+    // Retorna a peça presente na posição indicada (linha e coluna), ou null se fora dos limites.
     public Piece getPiece(int row, int col) {
+        if (row < 0 || row >= 8 || col < 0 || col >= 8) {
+            return null;
+        }
         return board[row][col];
     }
 
@@ -75,9 +78,11 @@ class Board {
         board[row][col] = piece;
     }
 
-    // Retorna true se a casa na posição indicada estiver vazia.
+    // Retorna true se a casa na posição indicada estiver vazia (e for válida).
     public boolean isEmpty(int row, int col) {
+        if (row < 0 || row >= 8 || col < 0 || col >= 8) {
+            return false;
+        }
         return board[row][col] == null;
     }
-
 }

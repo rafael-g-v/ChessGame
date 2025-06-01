@@ -1,5 +1,6 @@
 package view;
 
+import controller.GameController;
 import model.ChessModel;
 
 import javax.imageio.ImageIO;
@@ -16,10 +17,11 @@ public class GameView extends JPanel {
     private static final int BOARD_SIZE = 8;
 
     private ChessModel model;
+    private GameController controller;
     private Image[] images;
     private String[] codes = {"bp", "br", "bn", "bb", "bq", "bk", "wp", "wr", "wn", "wb", "wq", "wk"};
-    private Color white = new Color(51, 74, 75);
-    private Color black = new Color(59, 4, 30);
+    private Color white = new Color(243, 233, 208);
+    private Color black = new Color(60, 25, 99);
     private List<int[]> validMoves = new ArrayList<>();
     private int selectedRow = -1;
     private int selectedCol = -1;
@@ -47,11 +49,13 @@ public class GameView extends JPanel {
                 } else {
                     if (model.selectTargetSquare(row, col)) {
                         if (model.hasPendingPromotion()) {
-                            selectedRow = row;
-                            selectedCol = col;
+                            showPromotionMenu(e.getX(), e.getY());
                         } else {
                             selectedRow = -1;
                             selectedCol = -1;
+                            if (controller != null) {
+                                controller.verificarFimDeJogo();
+                            }
                         }
                     } else {
                         selectedRow = -1;
@@ -64,16 +68,21 @@ public class GameView extends JPanel {
         });
     }
 
+    public void setController(GameController controller) {
+        this.controller = controller;
+    }
+
     private void showPromotionMenu(int x, int y) {
         JPopupMenu menu = new JPopupMenu();
         String[] options = {"Queen", "Rook", "Bishop", "Knight"};
         for (String opt : options) {
             JMenuItem item = new JMenuItem(opt);
             item.addActionListener(e -> {
-                model.promotePawn(opt);
+                if (controller != null) {
+                    controller.tratarPromocao(opt);
+                }
                 selectedRow = -1;
                 selectedCol = -1;
-                repaint();
             });
             menu.add(item);
         }
@@ -110,21 +119,16 @@ public class GameView extends JPanel {
             }
         }
 
-        // Destacar movimentos válidos
-        g2.setColor(new Color(255, 255, 0, 128));
+        g2.setColor(new Color(128,0,0, 180));
         for (int[] move : validMoves) {
             g2.fillRect(move[1] * TILE_SIZE, move[0] * TILE_SIZE, TILE_SIZE, TILE_SIZE);
         }
     }
 
     private int indexOfCode(String code) {
-        if (code == null) {
-            return -1;
-        }
+        if (code == null) return -1;
         for (int i = 0; i < codes.length; i++) {
-            if (codes[i].equals(code)) {
-                return i;
-            }
+            if (codes[i].equals(code)) return i;
         }
         return -1;
     }
