@@ -15,7 +15,6 @@ public class ConsoleView extends JFrame {
         super("Jogo de Xadrez");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(660, 700);
-        setLocationRelativeTo(null);
 
         model = ChessModel.getInstance();
         controller = new GameController(model);
@@ -45,7 +44,6 @@ public class ConsoleView extends JFrame {
         jogoMenu.add(carregarPartida);
         menuBar.add(jogoMenu);
 
-        menuBar.add(Box.createHorizontalGlue()); // empurra o texto para a direita
         turnoLabel = new JLabel();
         menuBar.add(turnoLabel);
 
