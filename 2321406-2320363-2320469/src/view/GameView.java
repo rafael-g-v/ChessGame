@@ -12,26 +12,35 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe responsável pela visualização do tabuleiro de xadrez.
+ * Renderiza o estado atual do modelo (ChessModel) e trata interações do usuário via mouse.
+ */
 public class GameView extends JPanel {
-    private static final int TILE_SIZE = 80;
-    private static final int BOARD_SIZE = 8;
+    private static final int TILE_SIZE = 80;     // Tamanho de cada casa do tabuleiro em pixels
+    private static final int BOARD_SIZE = 8;     // Tamanho do tabuleiro (8x8)
 
-    private ChessModel model;
-    private GameController controller;
-    private Image[] images;
+    private ChessModel model;                    // Referência ao modelo contendo o estado do jogo
+    private GameController controller;           // Controlador responsável pela lógica de jogo
+    private Image[] images;                      // Array com imagens das peças
     private String[] codes = {"bp", "br", "bn", "bb", "bq", "bk", "wp", "wr", "wn", "wb", "wq", "wk"};
-    private Color white = new Color(243, 233, 208);
-    private Color black = new Color(60, 25, 99);
-    private List<int[]> validMoves = new ArrayList<>();
-    private int selectedRow = -1;
-    private int selectedCol = -1;
+    private Color white = new Color(243, 233, 208);  // Cor da casa clara
+    private Color black = new Color(60, 25, 99);     // Cor da casa escura
+    private List<int[]> validMoves = new ArrayList<>(); // Movimentos válidos da peça selecionada
+    private int selectedRow = -1;                // Linha da peça selecionada
+    private int selectedCol = -1;                // Coluna da peça selecionada
 
+    /**
+     * Construtor que inicializa o painel gráfico do tabuleiro.
+     * Define o tamanho, carrega imagens e configura eventos de clique.
+     */
     public GameView(ChessModel model) {
         this.model = model;
         this.images = new Image[codes.length];
         setPreferredSize(new Dimension(TILE_SIZE * BOARD_SIZE, TILE_SIZE * BOARD_SIZE));
-        loadImages();
+        loadImages(); // Carrega imagens das peças
 
+        // Adiciona listener de mouse para tratar seleção e movimentação de peças
         addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
                 int col = e.getX() / TILE_SIZE;
@@ -54,7 +63,7 @@ public class GameView extends JPanel {
                             selectedRow = -1;
                             selectedCol = -1;
                             if (controller != null) {
-                                controller.verificarFimDeJogo();
+                                controller.verificarFimDeJogo(); // Verifica se o jogo terminou
                             }
                         }
                     } else {
@@ -63,15 +72,21 @@ public class GameView extends JPanel {
                     }
                     validMoves.clear();
                 }
-                repaint();
+                repaint(); // Atualiza o painel
             }
         });
     }
 
+    /**
+     * Define o controlador associado à view.
+     */
     public void setController(GameController controller) {
         this.controller = controller;
     }
 
+    /**
+     * Exibe o menu de promoção de peão ao chegar na última linha.
+     */
     private void showPromotionMenu(int x, int y) {
         JPopupMenu menu = new JPopupMenu();
         String[] options = {"Queen", "Rook", "Bishop", "Knight"};
@@ -89,17 +104,23 @@ public class GameView extends JPanel {
         menu.show(this, x, y);
     }
 
+    /**
+     * Carrega imagens das peças a partir dos recursos do projeto.
+     */
     private void loadImages() {
         for (int i = 0; i < codes.length; i++) {
             try {
                 images[i] = ImageIO.read(getClass().getResource("/images/" + codes[i] + ".png"));
             } catch (IOException | IllegalArgumentException e) {
                 System.out.println("Erro ao carregar imagem " + codes[i] + ": " + e.getMessage());
-                System.exit(1);
+                System.exit(1); // Encerra o programa em caso de erro crítico
             }
         }
     }
 
+    /**
+     * Redesenha o tabuleiro e as peças.
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -119,12 +140,16 @@ public class GameView extends JPanel {
             }
         }
 
-        g2.setColor(new Color(128,0,0, 180));
+        // Destaca os movimentos válidos da peça selecionada
+        g2.setColor(new Color(128, 0, 0, 180));
         for (int[] move : validMoves) {
             g2.fillRect(move[1] * TILE_SIZE, move[0] * TILE_SIZE, TILE_SIZE, TILE_SIZE);
         }
     }
 
+    /**
+     * Retorna o índice da imagem correspondente a uma peça, dado seu código.
+     */
     private int indexOfCode(String code) {
         if (code == null) return -1;
         for (int i = 0; i < codes.length; i++) {
@@ -133,6 +158,10 @@ public class GameView extends JPanel {
         return -1;
     }
 
+    /**
+     * Permite atualizar o modelo associado ao painel.
+     * @param model nova instância do modelo do jogo
+     */
     public void setModel(ChessModel model) {
         this.model = model;
         repaint();
