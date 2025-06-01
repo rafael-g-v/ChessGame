@@ -3,6 +3,7 @@ package model;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
+import java.util.List;
 
 /**
  * Classe de teste para movimentos no modelo de xadrez (ChessModel).
@@ -96,4 +97,101 @@ public class ChessModelMovementTest {
 
         assertTrue("Rei preto deveria estar em cheque novamente após novo movimento da dama", model.isInCheck(false));
     }
+    
+    
+    /**
+     * Testa que um cavalo branco no centro do tabuleiro pode se mover para 8 posições diferentes.
+     */
+    @Test(timeout = 2000)
+    public void testKnightMovesWithoutObstacles() {
+        Board board = new Board(true);
+        board.clear();
+        board.setPiece(4, 4, new Knight(true));   // Cavalo branco no centro
+        board.setPiece(7, 7, new King(true));     // Rei branco
+        board.setPiece(0, 0, new King(false));    // Rei preto
+
+        ChessModel model = ChessModel.getInstance();
+        model.setBoard(board);
+
+        List<Position> moves = model.getValidMovesForPiece(new Position(4, 4));
+
+        // Espera-se 8 movimentos possíveis para o cavalo no centro
+        assertEquals("Cavalo no centro deve ter 8 movimentos possíveis", 8, moves.size());
+
+        // Verifica algumas posições específicas
+        assertTrue(containsPosition(moves, 2, 3));
+        assertTrue(containsPosition(moves, 2, 5));
+        assertTrue(containsPosition(moves, 3, 2));
+        assertTrue(containsPosition(moves, 3, 6));
+        assertTrue(containsPosition(moves, 5, 2));
+        assertTrue(containsPosition(moves, 5, 6));
+        assertTrue(containsPosition(moves, 6, 3));
+        assertTrue(containsPosition(moves, 6, 5));
+    }
+
+
+    /**
+     * Testa que uma torre não pode se mover se houver uma peça aliada à sua frente.
+     */
+    @Test(timeout = 2000)
+    public void testBlockedPieceHasNoMoves() {
+        Board board = new Board(true);
+        board.clear();
+        board.setPiece(4, 4, new Rook(true));     // Torre branca
+        board.setPiece(4, 5, new Pawn(true));     // Peão branco bloqueando à direita
+        board.setPiece(7, 7, new King(true));     // Rei branco
+        board.setPiece(0, 0, new King(false));    // Rei preto
+
+        ChessModel model = ChessModel.getInstance();
+        model.setBoard(board);
+
+        List<Position> moves = model.getValidMovesForPiece(new Position(4, 4));
+
+        // Deve ser menor que 14 (porque está bloqueada à direita)
+        assertTrue("Torre com peão aliado ao lado deve ter menos que 14 movimentos", moves.size() < 14);
+        assertFalse("Torre não deve poder capturar peça aliada", containsPosition(moves, 4, 5));
+    }
+    
+    /**
+     * Testa a promoção de um peão branco ao atingir a última linha.
+     * Verifica que a promoção pendente é detectada e concluída corretamente com a peça escolhida.
+     */
+    @Test(timeout = 2000)
+    public void pawnPromotionToKnight() {
+        Board board = new Board(true);
+        board.clear();
+
+        board.setPiece(1, 0, new Pawn(true));   // Peão branco em a7
+        board.setPiece(7, 4, new King(true));   // Rei branco (para evitar erros de ausência de rei)
+        board.setPiece(0, 4, new King(false));  // Rei preto
+
+        ChessModel model = ChessModel.getInstance();
+        model.setBoard(board);
+
+        // Move peão para a8
+        assertTrue("Peão branco deve ser selecionável", model.selectPiece(1, 0));
+        assertTrue("Movimento do peão até a última linha deve ser válido", model.selectTargetSquare(0, 0));
+
+        assertTrue("Deveria haver promoção pendente após o peão alcançar a última linha", model.hasPendingPromotion());
+
+        // Promove o peão para cavalo
+        assertTrue("Promoção para cavalo deveria ser possível", model.promotePawn("knight"));
+
+        String promotedCode = model.getPieceCode(0, 0);
+        assertEquals("wn", promotedCode);  // w = white, n = knight
+    }
+
+    
+    /**
+     * Função utilitária para verificar se uma lista de posições contém uma posição específica.
+     */
+    private boolean containsPosition(List<Position> positions, int row, int col) {
+        for (Position pos : positions) {
+            if (pos.row == row && pos.col == col) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
 }

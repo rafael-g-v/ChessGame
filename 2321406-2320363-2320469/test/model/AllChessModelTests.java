@@ -7,7 +7,8 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
     ChessModelBasicTest.class,
     ChessModelCheckTest.class,
-    ChessModelMovementTest.class
+    ChessModelMovementTest.class,
+    CheckModelMateTest.class,
 })
 
 public class AllChessModelTests {}

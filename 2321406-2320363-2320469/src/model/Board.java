@@ -79,4 +79,5 @@ class Board {
     public boolean isEmpty(int row, int col) {
         return board[row][col] == null;
     }
+
 }
