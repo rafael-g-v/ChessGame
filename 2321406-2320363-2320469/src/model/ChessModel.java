@@ -142,6 +142,14 @@ public class ChessModel {
         return whiteTurn;
     }
     
+    
+    /**
+     * Retorna o código da peça localizada em uma determinada posição do tabuleiro.
+     * O código é composto por uma letra indicando a cor ('w' para branco, 'b' para preto)
+     * seguida pela letra inicial do tipo da peça em minúsculo.
+     * Exemplo: "wp" para peão branco, "bk" para rei preto.
+     * A letra do cavalo (Knight) é representada por 'n' para evitar conflito com o rei (King).
+     */
     public String getPieceCode(int row, int col) {
         Piece piece = board.getPiece(row, col);
         if (piece == null) return null;
@@ -212,6 +220,13 @@ public class ChessModel {
         return false;
     }
     
+    
+    /**
+     * Realiza a promoção de um peão que alcançou a última linha do tabuleiro.
+     * A nova peça é escolhida com base no tipo passado como argumento.
+     * Após a promoção, a posição de promoção pendente é limpa e o turno muda para o outro jogador.
+     * Caso o tipo de peça fornecido seja inválido, uma exceção é lançada.
+     */
     public boolean promotePawn(String pieceType) {
         if (pendingPromotionPos == null) return false;
 
@@ -238,12 +253,22 @@ public class ChessModel {
         return true;
     }
 
+    
+    /**
+     * Verifica se há uma promoção de peão pendente.
+     * Isso indica que o jogador deve escolher uma peça para substituir o peão promovido.
+     */
     public boolean hasPendingPromotion() {
         return pendingPromotionPos != null;
     }
     
     
-
+    /**
+     * Retorna a lista de movimentos válidos para uma peça em uma determinada posição.
+     * Considera tanto as regras individuais de movimentação da peça quanto a necessidade
+     * de o movimento não deixar o próprio rei em cheque.
+     * Caso a posição não contenha uma peça válida da vez, a lista retornada estará vazia.
+     */
     public List<Position> getValidMovesForPiece(Position from) {
         List<Position> validMoves = new ArrayList<>();
 
@@ -263,7 +288,4 @@ public class ChessModel {
 
         return validMoves;
     }
-
-
-
 }
