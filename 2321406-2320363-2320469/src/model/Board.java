@@ -79,4 +79,95 @@ class Board {
     public boolean isEmpty(int row, int col) {
         return board[row][col] == null;
     }
+    
+    public String toFEN() {
+        StringBuilder fen = new StringBuilder();
+
+        for (int row = 0; row < 8; row++) {
+            int emptyCount = 0;
+
+            for (int col = 0; col < 8; col++) {
+                Piece piece = board[row][col];
+
+                if (piece == null) {
+                    emptyCount++;
+                } else {
+                    if (emptyCount > 0) {
+                        fen.append(emptyCount);
+                        emptyCount = 0;
+                    }
+
+                    String symbol = getFENSymbol(piece);
+                    fen.append(symbol);
+                }
+            }
+
+            if (emptyCount > 0) {
+                fen.append(emptyCount);
+            }
+
+            if (row < 7) {
+                fen.append('/');
+            }
+        }
+
+        return fen.toString();
+    }
+
+    // Auxiliar
+    private String getFENSymbol(Piece piece) {
+        String letter;
+
+        if (piece instanceof King) letter = "k";
+        else if (piece instanceof Queen) letter = "q";
+        else if (piece instanceof Rook) letter = "r";
+        else if (piece instanceof Bishop) letter = "b";
+        else if (piece instanceof Knight) letter = "n";
+        else if (piece instanceof Pawn) letter = "p";
+        else throw new IllegalArgumentException("Tipo de peça desconhecido");
+
+        return piece.isWhite() ? letter.toUpperCase() : letter;
+    }
+
+    
+    public void fromFEN(String fen) {
+        clear(); // limpa o tabuleiro
+
+        String[] rows = fen.split("/");
+        if (rows.length != 8) {
+            throw new IllegalArgumentException("FEN inválido: deve conter 8 linhas");
+        }
+
+        for (int row = 0; row < 8; row++) {
+            int col = 0;
+            for (char c : rows[row].toCharArray()) {
+                if (Character.isDigit(c)) {
+                    col += c - '0';
+                } else {
+                    boolean isWhite = Character.isUpperCase(c);
+                    Piece piece = createPieceFromFENChar(Character.toLowerCase(c), isWhite);
+                    setPiece(row, col, piece);
+                    col++;
+                }
+            }
+
+            if (col != 8) {
+                throw new IllegalArgumentException("FEN inválido: linha " + row + " não tem 8 colunas");
+            }
+        }
+    }
+
+    // Auxiliar
+    private Piece createPieceFromFENChar(char c, boolean isWhite) {
+        return switch (c) {
+            case 'k' -> new King(isWhite);
+            case 'q' -> new Queen(isWhite);
+            case 'r' -> new Rook(isWhite);
+            case 'b' -> new Bishop(isWhite);
+            case 'n' -> new Knight(isWhite);
+            case 'p' -> new Pawn(isWhite);
+            default  -> throw new IllegalArgumentException("Caractere FEN inválido: " + c);
+        };
+    }
+
 }

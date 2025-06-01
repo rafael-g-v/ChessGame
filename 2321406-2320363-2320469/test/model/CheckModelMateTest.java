@@ -1,5 +1,7 @@
-import static org.junit.Assert.*;
+package model;
 
+import static org.junit.Assert.*;
+import org.junit.Before;
 import org.junit.Test;
 
 public class CheckModelMateTest {
@@ -38,20 +40,20 @@ public class CheckModelMateTest {
      */
     @Test
     public void testStaleMatePosition() {
-        Board board = new Board(true);
-        board.clear();
+        ChessModel.resetInstance();           // garante modelo limpo e vez das brancas
+        Board board = new Board(true);        // cria tabuleiro vazio
 
-        board.setPiece(7, 7, new King(true));     // Rei branco em h1
-        board.setPiece(5, 5, new King(false));    // Rei preto em f2
-        board.setPiece(6, 6, new Queen(false));   // Dama preta em g3
+        board.setPiece(7, 7, new King(true));   // h1 – rei branco
+        board.setPiece(6, 5, new King(false));  // f2 – rei preto               <<< linha correta
+        board.setPiece(5, 6, new Queen(false)); // g3 – dama preta              <<< linha correta
 
         ChessModel model = ChessModel.getInstance();
         model.setBoard(board);
 
-        // Deve detectar afogamento para o jogador branco
         assertFalse("Não deve estar em xeque-mate", model.isCheckMate());
-        assertTrue("Deve estar em afogamento", model.isStalelMate());
+        assertTrue ("Deve estar em afogamento",   model.isStalelMate());
     }
+
 
     /**
      * Testa uma posição comum onde o jogo ainda pode continuar.
