@@ -39,8 +39,7 @@ public class ConsoleView extends JFrame {
     }
 
     /**
-     * Cria a barra de menus da interface com opções de jogo.
-     * @return JMenuBar com itens de jogo e rótulo do turno.
+     * Gerencia as telas do tabuleiro e a de inicio
      */
     private JMenuBar createMenuBar() {
         JMenuBar menuBar = new JMenuBar();
