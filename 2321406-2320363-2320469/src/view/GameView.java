@@ -10,8 +10,8 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 
 public class GameView extends JPanel {
-    private static int TILE_SIZE = 80;
-    private static int BOARD_SIZE = 8;
+    private static final int TILE_SIZE = 80;
+    private static final int BOARD_SIZE = 8;
 
     private ChessModel model;
     private Image[] images;
@@ -60,8 +60,8 @@ public class GameView extends JPanel {
 
         for (int row = 0; row < BOARD_SIZE; row++) {
             for (int col = 0; col < BOARD_SIZE; col++) {
-                boolean claro = (row + col) % 2 == 0;
-                g2.setColor(claro ? white : black);
+                boolean color_type = (row + col) % 2 == 0;
+                g2.setColor(color_type ? white : black);
                 g2.fillRect(col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 
                 String code = model.getPieceCode(row, col);
