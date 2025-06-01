@@ -63,8 +63,10 @@ class Board {
 
     // Move uma peça da posição "from" para a posição "to".
     // A posição de origem fica vazia após o movimento.
+    // Além de marca que a peça se moveu
     public void movePiece(Position from, Position to) {
         Piece piece = board[from.row][from.col];
+        piece.setHasMoved(true); // marca o movimento
         board[to.row][to.col] = piece;
         board[from.row][from.col] = null;
     }

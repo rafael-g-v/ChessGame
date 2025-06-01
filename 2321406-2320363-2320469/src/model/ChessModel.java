@@ -14,7 +14,8 @@ public class ChessModel {
     private boolean whiteTurn = true;
     private Position selectedPiecePos = null;
     private Position pendingPromotionPos = null;  // se != null, há promoção pendente
-
+    private Position enPassantTarget = null; // Posição do peão que pode ser capturado por en passant (válido apenas no turno seguinte)
+    
 
     // Construtor privado (padrão Singleton). Inicializa o tabuleiro com a configuração padrão.
     private ChessModel() {
@@ -68,14 +69,41 @@ public class ChessModel {
                 return false;
             }
 
+            // Trata movimento especial: en passant (remoção do peão capturado)
+            if (piece instanceof Pawn) {
+                if (target.equals(enPassantTarget) && board.isEmpty(target.row, target.col)) {
+                    int capturedRow = whiteTurn ? target.row + 1 : target.row - 1;
+                    board.setPiece(capturedRow, target.col, null); // Remove o peão capturado
+                }
+            }
+
+            // Move a peça principal
             board.movePiece(selectedPiecePos, target);
 
-            // 🔁 Verifica promoção pendente
+            // Trata movimento especial: roque (movimenta a torre também)
+            if (piece instanceof King && Math.abs(target.col - selectedPiecePos.col) == 2) {
+                int rookFromCol = (target.col == 6) ? 7 : 0;
+                int rookToCol = (target.col == 6) ? 5 : 3;
+                board.movePiece(new Position(target.row, rookFromCol), new Position(target.row, rookToCol));
+            }
+
+            // Atualiza a posição de en passant, se for um peão que se moveu duas casas
+            if (piece instanceof Pawn) {
+                if (Math.abs(target.row - selectedPiecePos.row) == 2) {
+                    enPassantTarget = new Position((target.row + selectedPiecePos.row) / 2, target.col);
+                } else {
+                    enPassantTarget = null; // Limpa se não for jogada válida para en passant
+                }
+            } else {
+                enPassantTarget = null; // Limpa se não for um peão
+            }
+
+            // Verifica promoção pendente
             if (piece instanceof Pawn) {
                 if ((piece.isWhite() && target.row == 0) || (!piece.isWhite() && target.row == 7)) {
                     pendingPromotionPos = target;
                     selectedPiecePos = null;
-                    return true; // movimento feito, mas promoção pendente
+                    return true;
                 }
             }
 
@@ -85,6 +113,7 @@ public class ChessModel {
         }
         return false;
     }
+
 
 
     // Verifica se o rei da cor indicada está em cheque.
@@ -288,4 +317,25 @@ public class ChessModel {
 
         return validMoves;
     }
+    
+    // Retorna a posição atual válida para en passant, ou null se não houver
+    public Position getEnPassantTarget() {
+        return enPassantTarget;
+    }
+    
+    /**
+     * Define manualmente o alvo de en passant (usado principalmente para testes).
+     */
+    public void setEnPassantTarget(Position pos) {
+        this.enPassantTarget = pos;
+    }
+
+    /**
+     * Força a definição do turno (branco ou preto). Usado apenas para testes.
+     */
+    public void setWhiteTurn(boolean whiteTurn) {
+        this.whiteTurn = whiteTurn;
+    }
+
+
 }
