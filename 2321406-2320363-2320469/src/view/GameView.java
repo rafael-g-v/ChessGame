@@ -14,21 +14,21 @@ import java.util.List;
 
 /**
  * Classe responsável pela visualização do tabuleiro de xadrez.
- * Renderiza o estado atual do modelo (ChessModel) e trata interações do usuário via mouse.
+ * Renderiza o estado atual do ChessModel e trata interações do usuário via mouse.
  */
 public class GameView extends JPanel {
-    private static final int TILE_SIZE = 80;     // Tamanho de cada casa do tabuleiro em pixels
-    private static final int BOARD_SIZE = 8;     // Tamanho do tabuleiro (8x8)
+    private static final int TILE_SIZE = 80; // Tamanho de cada casa do tabuleiro em pixels
+    private static final int BOARD_SIZE = 8; // Tamanho do tabuleiro (8x8)
 
-    private ChessModel model;                    // Referência ao modelo contendo o estado do jogo
-    private GameController controller;           // Controlador responsável pela lógica de jogo
-    private Image[] images;                      // Array com imagens das peças
+    private ChessModel model; 
+    private GameController controller;           
+    private Image[] images;
     private String[] codes = {"bp", "br", "bn", "bb", "bq", "bk", "wp", "wr", "wn", "wb", "wq", "wk"};
-    private Color white = new Color(243, 233, 208);  // Cor da casa clara
-    private Color black = new Color(60, 25, 99);     // Cor da casa escura
-    private List<int[]> validMoves = new ArrayList<>(); // Movimentos válidos da peça selecionada
-    private int selectedRow = -1;                // Linha da peça selecionada
-    private int selectedCol = -1;                // Coluna da peça selecionada
+    private Color white = new Color(243, 233, 208);  
+    private Color black = new Color(60, 25, 99); 
+    private List<int[]> validMoves = new ArrayList<>(); // lista de arrays de posicoes validas
+    private int selectedRow = -1;  // Linha da peça selecionada
+    private int selectedCol = -1;  // Coluna da peça selecionada
 
     /**
      * Construtor que inicializa o painel gráfico do tabuleiro.
@@ -46,7 +46,8 @@ public class GameView extends JPanel {
                 int col = e.getX() / TILE_SIZE;
                 int row = e.getY() / TILE_SIZE;
 
-                if (model.hasPendingPromotion()) {
+                if (model.hasPendingPromotion()) 
+                {
                     showPromotionMenu(e.getX(), e.getY());
                     return;
                 }
@@ -63,7 +64,7 @@ public class GameView extends JPanel {
                             selectedRow = -1;
                             selectedCol = -1;
                             if (controller != null) {
-                                controller.verificarFimDeJogo(); // Verifica se o jogo terminou
+                                controller.checkEndOfGame(); // Verifica se o jogo terminou
                             }
                         }
                     } else {
@@ -77,24 +78,23 @@ public class GameView extends JPanel {
         });
     }
 
-    /**
-     * Define o controlador associado à view.
-     */
+
+     // Define o controller
     public void setController(GameController controller) {
         this.controller = controller;
     }
+    
 
-    /**
-     * Exibe o menu de promoção de peão ao chegar na última linha.
-     */
+     // Exibe o menu de promoção de peão ao chegar na última linha.
     private void showPromotionMenu(int x, int y) {
         JPopupMenu menu = new JPopupMenu();
         String[] options = {"Queen", "Rook", "Bishop", "Knight"};
-        for (String opt : options) {
+        for (String opt : options) 
+        {
             JMenuItem item = new JMenuItem(opt);
             item.addActionListener(e -> {
                 if (controller != null) {
-                    controller.tratarPromocao(opt);
+                    controller.setPawnPromotion(opt);
                 }
                 selectedRow = -1;
                 selectedCol = -1;
