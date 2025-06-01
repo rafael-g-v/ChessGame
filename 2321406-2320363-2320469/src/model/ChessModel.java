@@ -3,7 +3,6 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * Classe principal que representa o modelo do jogo de xadrez (ChessModel).
  * Controla o estado do tabuleiro, o turno atual e as regras básicas de movimentação e cheque.
@@ -14,7 +13,6 @@ public class ChessModel {
     private boolean whiteTurn = true;
     private Position selectedPiecePos = null;
     private Position pendingPromotionPos = null;  // se != null, há promoção pendente
-
 
     // Construtor privado (padrão Singleton). Inicializa o tabuleiro com a configuração padrão.
     private ChessModel() {
@@ -70,7 +68,7 @@ public class ChessModel {
 
             board.movePiece(selectedPiecePos, target);
 
-            // 🔁 Verifica promoção pendente
+            // Verifica promoção pendente
             if (piece instanceof Pawn) {
                 if ((piece.isWhite() && target.row == 0) || (!piece.isWhite() && target.row == 7)) {
                     pendingPromotionPos = target;
@@ -85,7 +83,6 @@ public class ChessModel {
         }
         return false;
     }
-
 
     // Verifica se o rei da cor indicada está em cheque.
     // A função percorre o tabuleiro procurando por ameaças ao rei.
@@ -136,13 +133,11 @@ public class ChessModel {
         return !stillInCheck;
     }
 
-
     // Retorna verdadeiro se for a vez das peças brancas jogarem.
     public boolean isWhiteTurn() {
         return whiteTurn;
     }
-    
-    
+
     /**
      * Retorna o código da peça localizada em uma determinada posição do tabuleiro.
      * O código é composto por uma letra indicando a cor ('w' para branco, 'b' para preto)
@@ -157,20 +152,19 @@ public class ChessModel {
         String cor = piece.isWhite() ? "w" : "b";
         String tipo = piece.getClass().getSimpleName().toLowerCase().substring(0, 1);
 
-        // Corrige para 'n' no caso do Knight
         if (piece.getClass().getSimpleName().equals("Knight")) {
             tipo = "n";
         }
 
         return cor + tipo;
     }
-    
+
     /**
      * Verifica se o jogador da vez está em situação de xeque-mate.
      * Para isso, primeiro verifica se o rei está em cheque.
      * Se estiver, e se não houver nenhum movimento legal que possa livrar o jogador do cheque,
      * então a partida terminou em xeque-mate.
-     * */
+     */
     public boolean isCheckMate() {
         boolean isWhite = whiteTurn;
         if (!isInCheck(isWhite)) {
@@ -219,8 +213,7 @@ public class ChessModel {
         }
         return false;
     }
-    
-    
+
     /**
      * Realiza a promoção de um peão que alcançou a última linha do tabuleiro.
      * A nova peça é escolhida com base no tipo passado como argumento.
@@ -249,11 +242,10 @@ public class ChessModel {
 
         board.setPiece(pendingPromotionPos.row, pendingPromotionPos.col, newPiece);
         pendingPromotionPos = null;
-        whiteTurn = !whiteTurn; // troca o turno só após a promoção
+        whiteTurn = !whiteTurn;
         return true;
     }
 
-    
     /**
      * Verifica se há uma promoção de peão pendente.
      * Isso indica que o jogador deve escolher uma peça para substituir o peão promovido.
@@ -261,27 +253,27 @@ public class ChessModel {
     public boolean hasPendingPromotion() {
         return pendingPromotionPos != null;
     }
-    
-    
+
     /**
      * Retorna a lista de movimentos válidos para uma peça em uma determinada posição.
      * Considera tanto as regras individuais de movimentação da peça quanto a necessidade
      * de o movimento não deixar o próprio rei em cheque.
      * Caso a posição não contenha uma peça válida da vez, a lista retornada estará vazia.
      */
-    public List<Position> getValidMovesForPiece(Position from) {
-        List<Position> validMoves = new ArrayList<>();
+    public List<int[]> getValidMovesForPiece(int row, int col) {
+        List<int[]> validMoves = new ArrayList<>();
 
-        Piece piece = board.getPiece(from.row, from.col);
+        Piece piece = board.getPiece(row, col);
         if (piece == null || piece.isWhite() != whiteTurn) {
-            return validMoves; // vazio
+            return validMoves;
         }
 
-        for (int row = 0; row < 8; row++) {
-            for (int col = 0; col < 8; col++) {
-                Position to = new Position(row, col);
+        Position from = new Position(row, col);
+        for (int r = 0; r < 8; r++) {
+            for (int c = 0; c < 8; c++) {
+                Position to = new Position(r, c);
                 if (piece.isValidMove(from, to, board) && canMoveToEscapeCheck(from, to)) {
-                    validMoves.add(to);
+                    validMoves.add(new int[]{r, c});
                 }
             }
         }
