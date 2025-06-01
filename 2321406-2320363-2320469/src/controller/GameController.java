@@ -42,7 +42,7 @@ public class GameController {
     // Faz a promocao do peao recebendo como parametro o tipo da peca que ele ira se transformar
     public void setPawnPromotion(String tipo) {
         model.promotePawn(tipo);
-        view.repaint();           // atualiza a peca
+        view.repaint(); // atualiza a peca
         checkEndOfGame();     
     }
 
