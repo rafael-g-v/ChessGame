@@ -77,15 +77,27 @@ public class ChessModel {
                 }
             }
 
-            // Move a peça principal
-            board.movePiece(selectedPiecePos, target);
 
             // Trata movimento especial: roque (movimenta a torre também)
             if (piece instanceof King && Math.abs(target.col - selectedPiecePos.col) == 2) {
-                int rookFromCol = (target.col == 6) ? 7 : 0;
-                int rookToCol = (target.col == 6) ? 5 : 3;
-                board.movePiece(new Position(target.row, rookFromCol), new Position(target.row, rookToCol));
+                int rookCol   = (target.col > selectedPiecePos.col) ? 7 : 0;
+                Position rook = new Position(selectedPiecePos.row, rookCol);
+
+                // Valida sem alterar o jogo
+                if (!attemptCastling(selectedPiecePos, rook)) return false;
+
+                // Faz o movimento – primeiro rei, depois torre
+                int rookTargetCol = (rookCol == 7) ? 5 : 3;
+                board.movePiece(selectedPiecePos, target);
+                board.movePiece(rook, new Position(selectedPiecePos.row, rookTargetCol));
+
+                selectedPiecePos = null;
+                pendingPromotionPos = null;
+                enPassantTarget = null;
+                whiteTurn = !whiteTurn;
+                return true;
             }
+            
 
             // Atualiza a posição de en passant, se for um peão que se moveu duas casas
             if (piece instanceof Pawn) {
@@ -106,6 +118,9 @@ public class ChessModel {
                     return true;
                 }
             }
+            
+            // Move a peça principal
+            board.movePiece(selectedPiecePos, target);
 
             selectedPiecePos = null;
             whiteTurn = !whiteTurn;
@@ -156,12 +171,17 @@ public class ChessModel {
         Piece piece = board.getPiece(from.row, from.col);
         boolean isWhite = piece.isWhite();
         Piece captured = board.getPiece(to.row, to.col);
+        boolean movedBefore = piece.hasMoved();
+        boolean capturedMoved = captured != null && captured.hasMoved();
 
         board.movePiece(from, to);
         boolean stillInCheck = isInCheck(isWhite);
         board.movePiece(to, from);
         board.setPiece(to.row, to.col, captured);
 
+        piece.setHasMoved(movedBefore);
+        if (captured != null) captured.setHasMoved(capturedMoved);
+        
         return !stillInCheck;
     }
 
@@ -317,6 +337,35 @@ public class ChessModel {
 
         return validMoves;
     }
+    
+    /**  Retorna true se o roque é legal; NÃO mexe no tabuleiro  */
+    public boolean attemptCastling(Position kingPos, Position rookPos) {
+        Piece king = board.getPiece(kingPos.row, kingPos.col);
+        Piece rook = board.getPiece(rookPos.row, rookPos.col);
+
+        if (!(king instanceof King) || !(rook instanceof Rook)) return false;
+        if (king.isWhite() != whiteTurn)                     return false;
+        if (king.hasMoved() || rook.hasMoved())              return false;
+        if (kingPos.row != rookPos.row)                      return false;
+
+        int dir = (rookPos.col > kingPos.col) ? 1 : -1;
+
+        // casas entre rei e torre devem estar vazias
+        for (int c = kingPos.col + dir; c != rookPos.col; c += dir)
+            if (!board.isEmpty(kingPos.row, c)) return false;
+
+        // rei não pode estar em cheque
+        if (isInCheck(king.isWhite())) return false;
+
+        // nem pode atravessar casas atacadas
+        for (int i = 1; i <= 2; i++) {
+            Position step = new Position(kingPos.row, kingPos.col + i * dir);
+            if (!canMoveToEscapeCheck(kingPos, step)) return false;
+        }
+        return true;   // ←  só diz se pode
+    }
+
+
     
     // Retorna a posição atual válida para en passant, ou null se não houver
     public Position getEnPassantTarget() {
