@@ -386,5 +386,94 @@ public class ChessModel {
         this.whiteTurn = whiteTurn;
     }
 
+    public String generateFEN() {
+        StringBuilder fen = new StringBuilder();
 
+        for (int row = 0; row < 8; row++) {
+            int emptyCount = 0;
+
+            for (int col = 0; col < 8; col++) {
+                Piece piece = board.getPiece(row, col);
+
+                if (piece == null) {
+                    emptyCount++;
+                } else {
+                    if (emptyCount > 0) {
+                        fen.append(emptyCount);
+                        emptyCount = 0;
+                    }
+
+                    char symbol = getFENSymbol(piece);
+                    fen.append(symbol);
+                }
+            }
+
+            if (emptyCount > 0) {
+                fen.append(emptyCount);
+            }
+
+            if (row < 7) {
+                fen.append('/');
+            }
+        }
+
+        fen.append(' ');
+        fen.append(whiteTurn ? 'w' : 'b');
+
+        // Exemplo simples: não estamos salvando roque, en passant, etc.
+        return fen.toString();
+    }
+
+    private char getFENSymbol(Piece piece) {
+        char symbol;
+
+        if (piece instanceof King) symbol = 'k';
+        else if (piece instanceof Queen) symbol = 'q';
+        else if (piece instanceof Rook) symbol = 'r';
+        else if (piece instanceof Bishop) symbol = 'b';
+        else if (piece instanceof Knight) symbol = 'n';
+        else if (piece instanceof Pawn) symbol = 'p';
+        else symbol = '?';
+
+        return piece.isWhite() ? Character.toUpperCase(symbol) : symbol;
+    }    
+    
+    public void loadFEN(String fen) {
+        String[] parts = fen.split(" ");
+        if (parts.length < 2) {
+            throw new IllegalArgumentException("FEN inválido: " + fen);
+        }
+
+        String boardPart = parts[0];
+        String turnPart = parts[1];
+
+        board.clear();
+        int row = 0, col = 0;
+
+        for (char ch : boardPart.toCharArray()) {
+            if (ch == '/') {
+                row++;
+                col = 0;
+            } else if (Character.isDigit(ch)) {
+                col += Character.getNumericValue(ch);
+            } else {
+                boolean isWhite = Character.isUpperCase(ch);
+                Piece piece = switch (Character.toLowerCase(ch)) {
+                    case 'k' -> new King(isWhite);
+                    case 'q' -> new Queen(isWhite);
+                    case 'r' -> new Rook(isWhite);
+                    case 'b' -> new Bishop(isWhite);
+                    case 'n' -> new Knight(isWhite);
+                    case 'p' -> new Pawn(isWhite);
+                    default -> throw new IllegalArgumentException("Peça desconhecida no FEN: " + ch);
+                };
+                board.setPiece(row, col, piece);
+                col++;
+            }
+        }
+
+        this.whiteTurn = turnPart.equals("w");
+    }
+
+    
 }
