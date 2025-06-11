@@ -13,6 +13,8 @@ public class ChessModel {
     private boolean whiteTurn = true;
     private Position selectedPiecePos = null;
     private Position pendingPromotionPos = null;  // se != null, há promoção pendente
+    private Position enPassantTarget = null; // Posição do peão que pode ser capturado por en passant (válido apenas no turno seguinte)
+    
 
     // Construtor privado (padrão Singleton). Inicializa o tabuleiro com a configuração padrão.
     private ChessModel() {
@@ -66,16 +68,58 @@ public class ChessModel {
                 return false;
             }
 
-            board.movePiece(selectedPiecePos, target);
+            // Trata movimento especial: en passant (remoção do peão capturado)
+            if (piece instanceof Pawn) {
+                if (target.equals(enPassantTarget) && board.isEmpty(target.row, target.col)) {
+                    int capturedRow = whiteTurn ? target.row + 1 : target.row - 1;
+                    board.setPiece(capturedRow, target.col, null); // Remove o peão capturado
+                }
+            }
+
+
+            // Trata movimento especial: roque (movimenta a torre também)
+            if (piece instanceof King && Math.abs(target.col - selectedPiecePos.col) == 2) {
+                int rookCol   = (target.col > selectedPiecePos.col) ? 7 : 0;
+                Position rook = new Position(selectedPiecePos.row, rookCol);
+
+                // Valida sem alterar o jogo
+                if (!attemptCastling(selectedPiecePos, rook)) return false;
+
+                // Faz o movimento – primeiro rei, depois torre
+                int rookTargetCol = (rookCol == 7) ? 5 : 3;
+                board.movePiece(selectedPiecePos, target);
+                board.movePiece(rook, new Position(selectedPiecePos.row, rookTargetCol));
+
+                selectedPiecePos = null;
+                pendingPromotionPos = null;
+                enPassantTarget = null;
+                whiteTurn = !whiteTurn;
+                return true;
+            }
+            
+
+            // Atualiza a posição de en passant, se for um peão que se moveu duas casas
+            if (piece instanceof Pawn) {
+                if (Math.abs(target.row - selectedPiecePos.row) == 2) {
+                    enPassantTarget = new Position((target.row + selectedPiecePos.row) / 2, target.col);
+                } else {
+                    enPassantTarget = null; // Limpa se não for jogada válida para en passant
+                }
+            } else {
+                enPassantTarget = null; // Limpa se não for um peão
+            }
 
             // Verifica promoção pendente
             if (piece instanceof Pawn) {
                 if ((piece.isWhite() && target.row == 0) || (!piece.isWhite() && target.row == 7)) {
                     pendingPromotionPos = target;
                     selectedPiecePos = null;
-                    return true; // movimento feito, mas promoção pendente
+                    return true;
                 }
             }
+            
+            // Move a peça principal
+            board.movePiece(selectedPiecePos, target);
 
             selectedPiecePos = null;
             whiteTurn = !whiteTurn;
@@ -83,6 +127,8 @@ public class ChessModel {
         }
         return false;
     }
+
+
 
     // Verifica se o rei da cor indicada está em cheque.
     // A função percorre o tabuleiro procurando por ameaças ao rei.
@@ -124,12 +170,17 @@ public class ChessModel {
         Piece piece = board.getPiece(from.row, from.col);
         boolean isWhite = piece.isWhite();
         Piece captured = board.getPiece(to.row, to.col);
+        boolean movedBefore = piece.hasMoved();
+        boolean capturedMoved = captured != null && captured.hasMoved();
 
         board.movePiece(from, to);
         boolean stillInCheck = isInCheck(isWhite);
         board.movePiece(to, from);
         board.setPiece(to.row, to.col, captured);
 
+        piece.setHasMoved(movedBefore);
+        if (captured != null) captured.setHasMoved(capturedMoved);
+        
         return !stillInCheck;
     }
 
@@ -280,6 +331,145 @@ public class ChessModel {
 
         return validMoves;
     }
+    
+    /**  Retorna true se o roque é legal; NÃO mexe no tabuleiro  */
+    public boolean attemptCastling(Position kingPos, Position rookPos) {
+        Piece king = board.getPiece(kingPos.row, kingPos.col);
+        Piece rook = board.getPiece(rookPos.row, rookPos.col);
+
+        if (!(king instanceof King) || !(rook instanceof Rook)) return false;
+        if (king.isWhite() != whiteTurn)                     return false;
+        if (king.hasMoved() || rook.hasMoved())              return false;
+        if (kingPos.row != rookPos.row)                      return false;
+
+        int dir = (rookPos.col > kingPos.col) ? 1 : -1;
+
+        // casas entre rei e torre devem estar vazias
+        for (int c = kingPos.col + dir; c != rookPos.col; c += dir)
+            if (!board.isEmpty(kingPos.row, c)) return false;
+
+        // rei não pode estar em cheque
+        if (isInCheck(king.isWhite())) return false;
+
+        // nem pode atravessar casas atacadas
+        for (int i = 1; i <= 2; i++) {
+            Position step = new Position(kingPos.row, kingPos.col + i * dir);
+            if (!canMoveToEscapeCheck(kingPos, step)) return false;
+        }
+        return true;   // ←  só diz se pode
+    }
+
+
+    
+    // Retorna a posição atual válida para en passant, ou null se não houver
+    public Position getEnPassantTarget() {
+        return enPassantTarget;
+    }
+    
+    /**
+     * Define manualmente o alvo de en passant (usado principalmente para testes).
+     */
+    public void setEnPassantTarget(Position pos) {
+        this.enPassantTarget = pos;
+    }
+
+    /**
+     * Força a definição do turno (branco ou preto). Usado apenas para testes.
+     */
+    public void setWhiteTurn(boolean whiteTurn) {
+        this.whiteTurn = whiteTurn;
+    }
+
+    public String generateFEN() {
+        StringBuilder fen = new StringBuilder();
+
+        for (int row = 0; row < 8; row++) {
+            int emptyCount = 0;
+
+            for (int col = 0; col < 8; col++) {
+                Piece piece = board.getPiece(row, col);
+
+                if (piece == null) {
+                    emptyCount++;
+                } else {
+                    if (emptyCount > 0) {
+                        fen.append(emptyCount);
+                        emptyCount = 0;
+                    }
+
+                    char symbol = getFENSymbol(piece);
+                    fen.append(symbol);
+                }
+            }
+
+            if (emptyCount > 0) {
+                fen.append(emptyCount);
+            }
+
+            if (row < 7) {
+                fen.append('/');
+            }
+        }
+
+        fen.append(' ');
+        fen.append(whiteTurn ? 'w' : 'b');
+
+        // Exemplo simples: não estamos salvando roque, en passant, etc.
+        return fen.toString();
+    }
+
+    private char getFENSymbol(Piece piece) {
+        char symbol;
+
+        if (piece instanceof King) symbol = 'k';
+        else if (piece instanceof Queen) symbol = 'q';
+        else if (piece instanceof Rook) symbol = 'r';
+        else if (piece instanceof Bishop) symbol = 'b';
+        else if (piece instanceof Knight) symbol = 'n';
+        else if (piece instanceof Pawn) symbol = 'p';
+        else symbol = '?';
+
+        return piece.isWhite() ? Character.toUpperCase(symbol) : symbol;
+    }    
+    
+    public void loadFEN(String fen) {
+        String[] parts = fen.split(" ");
+        if (parts.length < 2) {
+            throw new IllegalArgumentException("FEN inválido: " + fen);
+        }
+
+        String boardPart = parts[0];
+        String turnPart = parts[1];
+
+        board.clear();
+        int row = 0, col = 0;
+
+        for (char ch : boardPart.toCharArray()) {
+            if (ch == '/') {
+                row++;
+                col = 0;
+            } else if (Character.isDigit(ch)) {
+                col += Character.getNumericValue(ch);
+            } else {
+                boolean isWhite = Character.isUpperCase(ch);
+                Piece piece = switch (Character.toLowerCase(ch)) {
+                    case 'k' -> new King(isWhite);
+                    case 'q' -> new Queen(isWhite);
+                    case 'r' -> new Rook(isWhite);
+                    case 'b' -> new Bishop(isWhite);
+                    case 'n' -> new Knight(isWhite);
+                    case 'p' -> new Pawn(isWhite);
+                    default -> throw new IllegalArgumentException("Peça desconhecida no FEN: " + ch);
+                };
+                board.setPiece(row, col, piece);
+                col++;
+            }
+        }
+
+        this.whiteTurn = turnPart.equals("w");
+    }
+
+    
 }
 /*
  * Observado: ter funcoes para gerenciar a lista de remover e adiconar da lista de eventos

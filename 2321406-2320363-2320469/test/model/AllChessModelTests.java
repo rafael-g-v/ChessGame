@@ -8,7 +8,8 @@ import org.junit.runners.Suite;
     ChessModelBasicTest.class,
     ChessModelCheckTest.class,
     ChessModelMovementTest.class,
-    CheckModelMateTest.class,
+    ChessModelMateTest.class,
+    ChessModelSpecialMovesTest.class,
 })
 
 public class AllChessModelTests {}
