@@ -30,6 +30,7 @@ public class GameView extends JPanel {
     private List<int[]> validMoves = new ArrayList<>(); // lista de arrays de posicoes validas
     private int selectedRow = -1;  // Linha da peça selecionada
     private int selectedCol = -1;  // Coluna da peça selecionada
+    private boolean promotionMenuVisible = false;
 
     /**
      * Construtor que inicializa o painel gráfico do tabuleiro.
@@ -110,9 +111,11 @@ public class GameView extends JPanel {
                 }
                 selectedRow = -1;
                 selectedCol = -1;
+                promotionMenuVisible = false;
             });
             menu.add(item);
         }
+        promotionMenuVisible = true;
         menu.show(this, x, y);
     }
 
@@ -180,6 +183,10 @@ public class GameView extends JPanel {
     }
     
     private void showContextMenu(int x, int y) {
+        if (promotionMenuVisible) {
+            return;  // Não exibe se o menu de promoção estiver aberto
+        }
+
         JPopupMenu menu = new JPopupMenu();
         JMenuItem salvarEVoltar = new JMenuItem("Salvar e Voltar");
 
@@ -196,5 +203,4 @@ public class GameView extends JPanel {
         menu.add(salvarEVoltar);
         menu.show(this, x, y);
     }
-
 }
