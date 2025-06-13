@@ -1,10 +1,15 @@
 package controller;
 
 import model.ChessModel;
+
 import view.ConsoleView;
 import view.GameView;
 
 import javax.swing.*;
+
+import java.awt.Component;
+import java.io.*;
+
 
 //Controlador do jogo de xadrez que coordena a comunicacao entre o chessmodel e as views.
 public class GameController {
@@ -58,4 +63,59 @@ public class GameController {
             consoleView.updateTurn(); // Atualiza o turno inicial no menu
         }
     }
+    
+    public void salvarPartida(Component parent) {
+        String fen = model.generateFEN();
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Salvar partida");
+
+        int escolha = fileChooser.showSaveDialog(parent);
+        if (escolha == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            
+            // Garante a extensão .txt
+            if (!selectedFile.getName().toLowerCase().endsWith(".txt")) {
+                selectedFile = new File(selectedFile.getAbsolutePath() + ".txt");
+            }
+
+            try (PrintWriter writer = new PrintWriter(selectedFile)) {
+                writer.println(fen);
+                writer.flush();
+                JOptionPane.showMessageDialog(parent, "Partida salva com sucesso!");
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(parent, "Erro ao salvar arquivo: " + ex.getMessage());
+            }
+        }
+    }
+
+    public ChessModel carregarPartidaViaArquivo(JFrame parent) {
+        JFileChooser fileChooser = new JFileChooser();
+        int result = fileChooser.showOpenDialog(parent);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            try {
+                BufferedReader reader = new BufferedReader(new FileReader(fileChooser.getSelectedFile()));
+                String fen = reader.readLine();
+                reader.close();
+
+                if (fen != null && !fen.trim().isEmpty()) {
+                    ChessModel.resetInstance();
+                    ChessModel newModel = ChessModel.getInstance();
+                    newModel.loadFEN(fen.trim());
+
+                    JOptionPane.showMessageDialog(parent, "Partida carregada com sucesso!");
+                    return newModel;  // Retorna o modelo carregado
+
+                } else {
+                    JOptionPane.showMessageDialog(parent, "Arquivo FEN vazio ou inválido.", "Erro", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (IOException | IllegalArgumentException ex) {
+                JOptionPane.showMessageDialog(parent, "Erro ao carregar arquivo: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        return null;  // Caso não carregue
+    }
+
+
+
 }
