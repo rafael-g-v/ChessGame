@@ -11,6 +11,7 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.*;
 
 /**
  * Classe responsável pela visualização do tabuleiro de xadrez.
@@ -43,6 +44,12 @@ public class GameView extends JPanel {
         // Adiciona listener de mouse para tratar seleção e movimentação de peças
         addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
+            	
+            	if (SwingUtilities.isRightMouseButton(e)) {
+                    showContextMenu(e.getX(), e.getY());
+                    return;
+                }
+            	
                 int col = e.getX() / TILE_SIZE;
                 int row = e.getY() / TILE_SIZE;
 
@@ -57,19 +64,24 @@ public class GameView extends JPanel {
                     selectedCol = col;
                     validMoves = model.getValidMovesForPiece(row, col);
                 } else {
-                    if (model.selectTargetSquare(row, col)) {
-                        if (model.hasPendingPromotion()) {
-                            showPromotionMenu(e.getX(), e.getY());
+                    try {
+                        if (model.selectTargetSquare(row, col)) {
+                            if (model.hasPendingPromotion()) {
+                                showPromotionMenu(e.getX(), e.getY());
+                            } else {
+                                selectedRow = -1;
+                                selectedCol = -1;
+                                if (controller != null) {
+                                    controller.checkEndOfGame(); // Verifica se o jogo terminou
+                                }
+                            }
                         } else {
                             selectedRow = -1;
                             selectedCol = -1;
-                            if (controller != null) {
-                                controller.checkEndOfGame(); // Verifica se o jogo terminou
-                            }
                         }
-                    } else {
-                        selectedRow = -1;
-                        selectedCol = -1;
+                    } catch (IllegalArgumentException ex) {
+                        // Coordenadas inválidas, ignora o clique
+                        return;
                     }
                     validMoves.clear();
                 }
@@ -166,4 +178,21 @@ public class GameView extends JPanel {
         this.model = model;
         repaint();
     }
+    
+    private void showContextMenu(int x, int y) {
+        JPopupMenu menu = new JPopupMenu();
+        JMenuItem salvarEVoltar = new JMenuItem("Salvar e Voltar");
+
+        salvarEVoltar.addActionListener(e -> {
+            if (controller != null) {
+                controller.salvarPartida(this);
+                SwingUtilities.getWindowAncestor(this).dispose(); // Fecha janela atual
+                new StartView(); // Abre a tela inicial
+            }
+        });
+
+        menu.add(salvarEVoltar);
+        menu.show(this, x, y);
+    }
+
 }
