@@ -35,10 +35,10 @@ public class GameController {
     public void checkEndOfGame() {
         if (model.isCheckMate()) {
             JOptionPane.showMessageDialog(view, "Xeque-mate! O jogador " + (model.isWhiteTurn() ? "branco" : "preto") + " perdeu.");
-            restart();
+            restartGame();
         } else if (model.isStalelMate()) {
             JOptionPane.showMessageDialog(view, "Empate por congelamento!");
-            restart();
+            restartGame();
         } else if (consoleView != null) {
             consoleView.updateTurn(); // Atualiza a barra de menu com a cor do próximo turno
         }
@@ -52,15 +52,19 @@ public class GameController {
     }
 
 
-    private void restart() {
-        ChessModel.resetInstance(); // Reinicia o Singleton do modelo
-        model = ChessModel.getInstance(); // Cria nova instância
-        view.setModel(model); // Atualiza o modelo na visualização
-        this.setGameView(view); // Reaplica a view ao controlador
-        view.repaint(); // Redesenha o tabuleiro
+    public void restartGame() {
+        ChessModel.resetInstance();
+        this.model = ChessModel.getInstance();
+
+        GameView newGameView = new GameView(model);
+        newGameView.setController(this);
+
+        this.setGameView(newGameView);
 
         if (consoleView != null) {
-            consoleView.updateTurn(); // Atualiza o turno inicial no menu
+            consoleView.setModel(model);
+            consoleView.setGameView(newGameView);
+            consoleView.updateTurn();
         }
     }
     
@@ -117,6 +121,7 @@ public class GameController {
         }
         return null;  // Caso não carregue
     }
+    
 
 
 

@@ -46,7 +46,8 @@ public class ConsoleView extends JFrame {
         JMenu gameMenu = new JMenu("Jogo");
 
         JMenuItem newGame = new JMenuItem("Reiniciar Partida");
-        newGame.addActionListener(e -> restartGame());
+        newGame.addActionListener(e -> controller.restartGame());
+
 
         JMenuItem carregarPartida = new JMenuItem("Carregar Partida");
         carregarPartida.addActionListener(e -> carregarPartida());
@@ -59,27 +60,6 @@ public class ConsoleView extends JFrame {
         menuBar.add(turnoLabel);
 
         return menuBar;
-    }
-
-    /**
-     * Reinicia o jogo criando um novo modelo, nova GameView e novo controlador.
-     */
-    private void restartGame() {
-        ChessModel.resetInstance();
-        model = ChessModel.getInstance();
-
-        controller = new GameController(model);
-        controller.setConsoleView(this);
-
-        remove(gameView); // remove view antiga
-        gameView = new GameView(model);
-        controller.setGameView(gameView);
-        gameView.setController(controller);
-        add(gameView); // nova view
-
-        updateTurn();
-        revalidate();
-        repaint();
     }
 
     /**
@@ -122,5 +102,20 @@ public class ConsoleView extends JFrame {
             repaint();
         }
     }
+    
+    public void setModel(ChessModel model) {
+        this.model = model;
+    }
+    
+    public void setGameView(GameView gameView) {
+        if (this.gameView != null) {
+            remove(this.gameView);
+        }
+        this.gameView = gameView;
+        add(gameView);
+        revalidate();
+        repaint();
+    }
+
 
 }
