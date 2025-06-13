@@ -112,6 +112,7 @@ public class ChessModel {
             // Verifica promoção pendente
             if (piece instanceof Pawn) {
                 if ((piece.isWhite() && target.row == 0) || (!piece.isWhite() && target.row == 7)) {
+                    board.movePiece(selectedPiecePos, target);  // Move peão para a última linha
                     pendingPromotionPos = target;
                     selectedPiecePos = null;
                     return true;
