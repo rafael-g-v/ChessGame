@@ -185,9 +185,11 @@ public class GameView extends JPanel {
 
         salvarEVoltar.addActionListener(e -> {
             if (controller != null) {
-                controller.salvarPartida(this);
-                SwingUtilities.getWindowAncestor(this).dispose(); // Fecha janela atual
-                new StartView(); // Abre a tela inicial
+                boolean salvo = controller.salvarPartida(this);
+                if (salvo) {
+                    SwingUtilities.getWindowAncestor(this).dispose(); // Fecha janela atual
+                    new StartView(); // Abre a tela inicial
+                }
             }
         });
 

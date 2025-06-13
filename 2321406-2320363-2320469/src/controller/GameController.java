@@ -64,7 +64,7 @@ public class GameController {
         }
     }
     
-    public void salvarPartida(Component parent) {
+    public boolean salvarPartida(Component parent) {
         String fen = model.generateFEN();
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Salvar partida");
@@ -72,7 +72,7 @@ public class GameController {
         int escolha = fileChooser.showSaveDialog(parent);
         if (escolha == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
-            
+
             // Garante a extensão .txt
             if (!selectedFile.getName().toLowerCase().endsWith(".txt")) {
                 selectedFile = new File(selectedFile.getAbsolutePath() + ".txt");
@@ -82,12 +82,14 @@ public class GameController {
                 writer.println(fen);
                 writer.flush();
                 JOptionPane.showMessageDialog(parent, "Partida salva com sucesso!");
+                return true;  // Salvamento concluído
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(parent, "Erro ao salvar arquivo: " + ex.getMessage());
             }
         }
+        return false;  // Salvamento não ocorreu (cancelou ou deu erro)
     }
-
+    
     public ChessModel carregarPartidaViaArquivo(JFrame parent) {
         JFileChooser fileChooser = new JFileChooser();
         int result = fileChooser.showOpenDialog(parent);
