@@ -45,7 +45,7 @@ public class ConsoleView extends JFrame {
         JMenuBar menuBar = new JMenuBar();
         JMenu gameMenu = new JMenu("Jogo");
 
-        JMenuItem newGame = new JMenuItem("Nova Partida");
+        JMenuItem newGame = new JMenuItem("Reiniciar Partida");
         newGame.addActionListener(e -> restartGame());
 
         JMenuItem carregarPartida = new JMenuItem("Carregar Partida");
