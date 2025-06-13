@@ -24,7 +24,7 @@ public class ChessModelFENTest {
     @Test(timeout = 2000)
     public void testLoadAndGenerateFEN() {
         // FEN de exemplo: tabuleiro parcialmente cheio, rei branco e preto, e uma torre
-        String fen = "8/8/8/8/8/8/8/R3K2r w";
+        String fen = "8/8/8/8/8/8/8/R3K2r w - - 0 1";
 
         ChessModel model = ChessModel.getInstance();
         model.loadFEN(fen);
