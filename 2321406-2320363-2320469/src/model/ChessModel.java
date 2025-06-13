@@ -414,7 +414,9 @@ public class ChessModel {
         fen.append(' ');
         fen.append(whiteTurn ? 'w' : 'b');
 
-        // Exemplo simples: não estamos salvando roque, en passant, etc.
+        // Por simplicidade: sem roque disponível, sem en passant, contadores zerados
+        fen.append(" - - 0 1");
+
         return fen.toString();
     }
 
@@ -430,8 +432,8 @@ public class ChessModel {
         else symbol = '?';
 
         return piece.isWhite() ? Character.toUpperCase(symbol) : symbol;
-    }    
-    
+    }
+
     public void loadFEN(String fen) {
         String[] parts = fen.split(" ");
         if (parts.length < 2) {
@@ -440,6 +442,9 @@ public class ChessModel {
 
         String boardPart = parts[0];
         String turnPart = parts[1];
+        // Campos adicionais podem ser usados no futuro:
+        // String castlingRights = (parts.length > 2) ? parts[2] : "-";
+        // String enPassantTarget = (parts.length > 3) ? parts[3] : "-";
 
         board.clear();
         int row = 0, col = 0;
@@ -468,8 +473,6 @@ public class ChessModel {
 
         this.whiteTurn = turnPart.equals("w");
     }
-
-    
 }
 /*
  * Observado: ter funcoes para gerenciar a lista de remover e adiconar da lista de eventos
