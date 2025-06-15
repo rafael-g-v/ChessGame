@@ -1,5 +1,6 @@
 package model;
 
+import observer.Observable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,13 +8,18 @@ import java.util.List;
  * Classe principal que representa o modelo do jogo de xadrez (ChessModel).
  * Controla o estado do tabuleiro, o turno atual e as regras básicas de movimentação e cheque.
  */
-public class ChessModel {
+public class ChessModel implements Observable  {
     private static ChessModel instance;
     private Board board;
+    private boolean showSaveMenuRequested = false;
+    private boolean showPromotionMenuRequested = false;
     private boolean whiteTurn = true;
     private Position selectedPiecePos = null;
     private Position pendingPromotionPos = null;  // se != null, há promoção pendente
     private Position enPassantTarget = null; // Posição do peão que pode ser capturado por en passant (válido apenas no turno seguinte)
+    private int halfmoveClock = 0;     // contador dos 50 lances
+    private int fullMoveNumber = 1;    // número completo do lance
+
     
 
     // Construtor privado (padrão Singleton). Inicializa o tabuleiro com a configuração padrão.
@@ -37,6 +43,7 @@ public class ChessModel {
     // Define um tabuleiro customizado. Usado para setups específicos ou testes.
     public void setBoard(Board customBoard) {
         this.board = customBoard;
+        notificarObservadores();
     }
 
     // Retorna o tabuleiro atual do modelo.
@@ -108,11 +115,24 @@ public class ChessModel {
             } else {
                 enPassantTarget = null; // Limpa se não for um peão
             }
+            
+            // Se for avanço de peão ou captura, zera clock dos 50 lances
+            if (piece instanceof Pawn || (board.getPiece(target.row, target.col) != null)) {
+                halfmoveClock = 0;
+            } else {
+                halfmoveClock++;
+            }
+
+            // Se foi a vez das pretas, incrementa fullMoveNumber
+            if (!whiteTurn) {
+                fullMoveNumber++;
+            }
 
             // Verifica promoção pendente
             if (piece instanceof Pawn) {
                 if ((piece.isWhite() && target.row == 0) || (!piece.isWhite() && target.row == 7)) {
                     board.movePiece(selectedPiecePos, target);  // Move peão para a última linha
+                    notificarObservadores();
                     pendingPromotionPos = target;
                     selectedPiecePos = null;
                     return true;
@@ -121,9 +141,10 @@ public class ChessModel {
             
             // Move a peça principal
             board.movePiece(selectedPiecePos, target);
-
+            notificarObservadores();
             selectedPiecePos = null;
             whiteTurn = !whiteTurn;
+            
             return true;
         }
         return false;
@@ -293,6 +314,7 @@ public class ChessModel {
         }
 
         board.setPiece(pendingPromotionPos.row, pendingPromotionPos.col, newPiece);
+        notificarObservadores();
         pendingPromotionPos = null;
         whiteTurn = !whiteTurn;
         return true;
@@ -381,42 +403,72 @@ public class ChessModel {
         this.whiteTurn = whiteTurn;
     }
 
+    private boolean canCastle(char color, boolean kingside) {
+        int row = (color == 'w') ? 7 : 0;
+        Piece king = board.getPiece(row, 4);
+        Piece rook = kingside ? board.getPiece(row, 7) : board.getPiece(row, 0);
+
+        if (!(king instanceof King) || !(rook instanceof Rook)) return false;
+        if (king.isWhite() != (color == 'w') || rook.isWhite() != (color == 'w')) return false;
+        if (king.hasMoved() || rook.hasMoved()) return false;
+
+        return true;
+    }
+
+    
     public String generateFEN() {
         StringBuilder fen = new StringBuilder();
 
+        // Parte 1: tabuleiro
         for (int row = 0; row < 8; row++) {
-            int emptyCount = 0;
-
+            int empty = 0;
             for (int col = 0; col < 8; col++) {
-                Piece piece = board.getPiece(row, col);
-
-                if (piece == null) {
-                    emptyCount++;
+                Piece p = board.getPiece(row, col);
+                if (p == null) {
+                    empty++;
                 } else {
-                    if (emptyCount > 0) {
-                        fen.append(emptyCount);
-                        emptyCount = 0;
+                    if (empty > 0) {
+                        fen.append(empty);
+                        empty = 0;
                     }
-
-                    char symbol = getFENSymbol(piece);
-                    fen.append(symbol);
+                    fen.append(getFENSymbol(p));
                 }
             }
-
-            if (emptyCount > 0) {
-                fen.append(emptyCount);
+            if (empty > 0) {
+                fen.append(empty);
             }
-
             if (row < 7) {
                 fen.append('/');
             }
         }
 
-        fen.append(' ');
-        fen.append(whiteTurn ? 'w' : 'b');
+        // Parte 2: turno
+        fen.append(' ').append(whiteTurn ? 'w' : 'b');
 
-        // Por simplicidade: sem roque disponível, sem en passant, contadores zerados
-        fen.append(" - - 0 1");
+        // Parte 3: direitos de roque
+        StringBuilder castling = new StringBuilder();
+        if (canCastle('w', true)) castling.append('K');
+        if (canCastle('w', false)) castling.append('Q');
+        if (canCastle('b', true)) castling.append('k');
+        if (canCastle('b', false)) castling.append('q');
+        if (castling.length() == 0) castling.append('-');
+        fen.append(' ').append(castling);
+
+        // Parte 4: en passant
+        fen.append(' ');
+        if (enPassantTarget != null) {
+            char file = (char) ('a' + enPassantTarget.col);
+            char rank = (char) ('8' - enPassantTarget.row);
+            fen.append(file).append(rank);
+        } else {
+            fen.append('-');
+        }
+
+        // Parte 5: meio-lances
+        fen.append(' ').append(halfmoveClock);
+
+        // Parte 6: número de lance
+        fen.append(' ').append(fullMoveNumber);
 
         return fen.toString();
     }
@@ -437,25 +489,24 @@ public class ChessModel {
 
     public void loadFEN(String fen) {
         String[] parts = fen.split(" ");
-        if (parts.length < 2) {
+        if (parts.length < 4) {
             throw new IllegalArgumentException("FEN inválido: " + fen);
         }
 
         String boardPart = parts[0];
         String turnPart = parts[1];
-        // Campos adicionais podem ser usados no futuro:
-        // String castlingRights = (parts.length > 2) ? parts[2] : "-";
-        // String enPassantTarget = (parts.length > 3) ? parts[3] : "-";
+        String castlingPart = parts[2];
+        String enPassantPart = parts[3];
 
-        board.clear();
+        this.board.clear();
+
         int row = 0, col = 0;
-
         for (char ch : boardPart.toCharArray()) {
             if (ch == '/') {
                 row++;
                 col = 0;
             } else if (Character.isDigit(ch)) {
-                col += Character.getNumericValue(ch);
+                col += ch - '0';
             } else {
                 boolean isWhite = Character.isUpperCase(ch);
                 Piece piece = switch (Character.toLowerCase(ch)) {
@@ -465,14 +516,91 @@ public class ChessModel {
                     case 'b' -> new Bishop(isWhite);
                     case 'n' -> new Knight(isWhite);
                     case 'p' -> new Pawn(isWhite);
-                    default -> throw new IllegalArgumentException("Peça desconhecida no FEN: " + ch);
+                    default -> throw new IllegalArgumentException("Peça desconhecida: " + ch);
                 };
                 board.setPiece(row, col, piece);
                 col++;
             }
         }
 
+        notificarObservadores();
         this.whiteTurn = turnPart.equals("w");
+
+        // castling rights → set hasMoved false se direito existe
+        if (castlingPart.contains("K")) {
+            Piece r = board.getPiece(7,7);
+            Piece k = board.getPiece(7,4);
+            if (r instanceof Rook) r.setHasMoved(false);
+            if (k instanceof King) k.setHasMoved(false);
+        } else if (board.getPiece(7,7) instanceof Rook) {
+            board.getPiece(7,7).setHasMoved(true);
+        }
+
+        if (castlingPart.contains("Q")) {
+            Piece r = board.getPiece(7,0);
+            Piece k = board.getPiece(7,4);
+            if (r instanceof Rook) r.setHasMoved(false);
+            if (k instanceof King) k.setHasMoved(false);
+        } else if (board.getPiece(7,0) instanceof Rook) {
+            board.getPiece(7,0).setHasMoved(true);
+        }
+
+        if (castlingPart.contains("k")) {
+            Piece r = board.getPiece(0,7);
+            Piece k = board.getPiece(0,4);
+            if (r instanceof Rook) r.setHasMoved(false);
+            if (k instanceof King) k.setHasMoved(false);
+        } else if (board.getPiece(0,7) instanceof Rook) {
+            board.getPiece(0,7).setHasMoved(true);
+        }
+
+        if (castlingPart.contains("q")) {
+            Piece r = board.getPiece(0,0);
+            Piece k = board.getPiece(0,4);
+            if (r instanceof Rook) r.setHasMoved(false);
+            if (k instanceof King) k.setHasMoved(false);
+        } else if (board.getPiece(0,0) instanceof Rook) {
+            board.getPiece(0,0).setHasMoved(true);
+        }
+
+        // en passant
+        if (!enPassantPart.equals("-")) {
+            int colEp = enPassantPart.charAt(0) - 'a';
+            int rowEp = '8' - enPassantPart.charAt(1);
+            this.enPassantTarget = new Position(rowEp, colEp);
+        } else {
+            this.enPassantTarget = null;
+        }
+
+        // opcional: meio-lances e fullMoveNumber
+        this.halfmoveClock = (parts.length > 4) ? Integer.parseInt(parts[4]) : 0;
+        this.fullMoveNumber = (parts.length > 5) ? Integer.parseInt(parts[5]) : 1;
+    }
+    
+    public void requestShowSaveMenu() {
+        this.showSaveMenuRequested = true;
+        notificarObservadores();
+    }
+
+    public boolean isShowSaveMenuRequested() {
+        return showSaveMenuRequested;
+    }
+
+    public void clearShowSaveMenuRequest() {
+        this.showSaveMenuRequested = false;
+    }
+
+    public void requestShowPromotionMenu() {
+        this.showPromotionMenuRequested = true;
+        notificarObservadores();
+    }
+
+    public boolean isShowPromotionMenuRequested() {
+        return showPromotionMenuRequested;
+    }
+
+    public void clearShowPromotionMenuRequest() {
+        this.showPromotionMenuRequested = false;
     }
 }
 /*
