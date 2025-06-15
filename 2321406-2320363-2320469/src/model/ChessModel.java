@@ -1,5 +1,6 @@
 package model;
 
+import observer.Observable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,9 +8,11 @@ import java.util.List;
  * Classe principal que representa o modelo do jogo de xadrez (ChessModel).
  * Controla o estado do tabuleiro, o turno atual e as regras básicas de movimentação e cheque.
  */
-public class ChessModel {
+public class ChessModel implements Observable  {
     private static ChessModel instance;
     private Board board;
+    private boolean showSaveMenuRequested = false;
+    private boolean showPromotionMenuRequested = false;
     private boolean whiteTurn = true;
     private Position selectedPiecePos = null;
     private Position pendingPromotionPos = null;  // se != null, há promoção pendente
@@ -37,6 +40,7 @@ public class ChessModel {
     // Define um tabuleiro customizado. Usado para setups específicos ou testes.
     public void setBoard(Board customBoard) {
         this.board = customBoard;
+        notificarObservadores();
     }
 
     // Retorna o tabuleiro atual do modelo.
@@ -113,6 +117,7 @@ public class ChessModel {
             if (piece instanceof Pawn) {
                 if ((piece.isWhite() && target.row == 0) || (!piece.isWhite() && target.row == 7)) {
                     board.movePiece(selectedPiecePos, target);  // Move peão para a última linha
+                    notificarObservadores();
                     pendingPromotionPos = target;
                     selectedPiecePos = null;
                     return true;
@@ -121,9 +126,10 @@ public class ChessModel {
             
             // Move a peça principal
             board.movePiece(selectedPiecePos, target);
-
+            notificarObservadores();
             selectedPiecePos = null;
             whiteTurn = !whiteTurn;
+            
             return true;
         }
         return false;
@@ -293,6 +299,7 @@ public class ChessModel {
         }
 
         board.setPiece(pendingPromotionPos.row, pendingPromotionPos.col, newPiece);
+        notificarObservadores();
         pendingPromotionPos = null;
         whiteTurn = !whiteTurn;
         return true;
@@ -473,6 +480,33 @@ public class ChessModel {
         }
 
         this.whiteTurn = turnPart.equals("w");
+        notificarObservadores();
+    }
+    
+    public void requestShowSaveMenu() {
+        this.showSaveMenuRequested = true;
+        notificarObservadores();
+    }
+
+    public boolean isShowSaveMenuRequested() {
+        return showSaveMenuRequested;
+    }
+
+    public void clearShowSaveMenuRequest() {
+        this.showSaveMenuRequested = false;
+    }
+
+    public void requestShowPromotionMenu() {
+        this.showPromotionMenuRequested = true;
+        notificarObservadores();
+    }
+
+    public boolean isShowPromotionMenuRequested() {
+        return showPromotionMenuRequested;
+    }
+
+    public void clearShowPromotionMenuRequest() {
+        this.showPromotionMenuRequested = false;
     }
 }
 /*

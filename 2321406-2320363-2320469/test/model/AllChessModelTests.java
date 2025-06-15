@@ -11,6 +11,7 @@ import org.junit.runners.Suite;
     ChessModelMateTest.class,
     ChessModelSpecialMovesTest.class,
     ChessModelFENTest.class,
+    ChessModelObserverTest.class,
 })
 
 public class AllChessModelTests {}

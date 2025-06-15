@@ -2,6 +2,9 @@ package controller;
 
 import model.ChessModel;
 
+import observer.Observable;
+import observer.Observer;
+
 import view.ConsoleView;
 import view.GameView;
 
@@ -12,7 +15,7 @@ import java.io.*;
 
 
 //Controlador do jogo de xadrez que coordena a comunicacao entre o chessmodel e as views.
-public class GameController {
+public class GameController implements Observer{
     private ChessModel model;              
     private GameView view; // view do tabuleiro
     private ConsoleView consoleView;  // view ta tela de inicio
@@ -25,11 +28,20 @@ public class GameController {
     public void setGameView(GameView view) {
         this.view = view;
     }
-
  
     public void setConsoleView(ConsoleView consoleView) {
         this.consoleView = consoleView;
     }
+    
+    @Override
+    public void notificar(Observable o) {
+        SwingUtilities.invokeLater(() -> {
+            if (view != null)        view.repaint();
+            if (consoleView != null) consoleView.updateTurn();
+            checkEndOfGame();
+        });
+    }
+
 
     // Verifica se foi cheque mate, congelamento, ou se o jogo continua
     public void checkEndOfGame() {

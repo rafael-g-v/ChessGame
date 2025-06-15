@@ -47,7 +47,7 @@ public class GameView extends JPanel {
             public void mousePressed(MouseEvent e) {
             	
             	if (SwingUtilities.isRightMouseButton(e)) {
-                    showContextMenu(e.getX(), e.getY());
+            		showContextMenu(e.getX(), e.getY());
                     return;
                 }
             	
@@ -56,7 +56,7 @@ public class GameView extends JPanel {
 
                 if (model.hasPendingPromotion()) 
                 {
-                    showPromotionMenu(e.getX(), e.getY());
+                	showPromotionMenu(e.getX(), e.getY());
                     return;
                 }
 
@@ -96,10 +96,9 @@ public class GameView extends JPanel {
     public void setController(GameController controller) {
         this.controller = controller;
     }
-    
 
      // Exibe o menu de promoção de peão ao chegar na última linha.
-    private void showPromotionMenu(int x, int y) {
+    protected void showPromotionMenu(int x, int y) {
         JPopupMenu menu = new JPopupMenu();
         String[] options = {"Queen", "Rook", "Bishop", "Knight"};
         for (String opt : options) 
