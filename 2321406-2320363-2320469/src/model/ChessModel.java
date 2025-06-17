@@ -603,9 +603,3 @@ public class ChessModel implements Observable  {
         this.showPromotionMenuRequested = false;
     }
 }
-/*
- * Observado: ter funcoes para gerenciar a lista de remover e adiconar da lista de eventos
- * Chamar um metodo no facade de adicionar observador
- * Observador vai notificar o sistema de eventos
- * Criar arquivos de observador e observado talvez ate em um pacote deles tudo publico
- */
