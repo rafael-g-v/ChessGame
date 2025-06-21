@@ -21,7 +21,7 @@ public class StartView extends JFrame {
         JButton newGameBtn = new JButton("Nova Partida");
         JButton loadFENFileBtn = new JButton("Carregar Partida de Arquivo");
 
-        // Nova partida
+        // Nova partida (talvez mudar pra tirar esse action listener)
         newGameBtn.addActionListener(e -> {
             dispose();
             ChessModel.resetInstance();
