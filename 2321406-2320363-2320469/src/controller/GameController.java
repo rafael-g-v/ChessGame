@@ -33,10 +33,12 @@ public class GameController implements Observer{
         this.consoleView = consoleView;
     }
     
+    //Recebe: Observable que originou a notificação
+    //Ação: Atualiza UI e verifica fim de jogo
     @Override
     public void notificar(Observable o) {
         SwingUtilities.invokeLater(() -> {
-            if (view != null)        view.repaint();
+            if (view != null) view.repaint(); // Atualiza tabuleiro
             if (consoleView != null) consoleView.updateTurn();
             checkEndOfGame();
         });
@@ -63,7 +65,7 @@ public class GameController implements Observer{
         checkEndOfGame();     
     }
 
-
+    //Reseta o modelo do jogo para o estado inicial, atualiza as referências nas views e notifica componentes 
     public void restartGame() {
         ChessModel.resetInstance();
         this.model = ChessModel.getInstance();
@@ -79,7 +81,9 @@ public class GameController implements Observer{
             consoleView.updateTurn();
         }
     }
-    
+
+    //Recebe: componente pai para a caixa de diálogo
+    //Retorna: true se salvou com sucesso, false caso contrário
     public boolean salvarPartida(Component parent) {
         String fen = model.generateFEN();
         JFileChooser fileChooser = new JFileChooser();
@@ -105,7 +109,9 @@ public class GameController implements Observer{
         }
         return false;  // Salvamento não ocorreu (cancelou ou deu erro)
     }
-    
+
+    //Recebe: JFrame pai para diálogos
+    //Retorna: ChessModel carregado ou null se falhar
     public ChessModel carregarPartidaViaArquivo(JFrame parent) {
         JFileChooser fileChooser = new JFileChooser();
         int result = fileChooser.showOpenDialog(parent);
@@ -133,8 +139,4 @@ public class GameController implements Observer{
         }
         return null;  // Caso não carregue
     }
-    
-
-
-
 }
