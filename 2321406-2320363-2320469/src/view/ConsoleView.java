@@ -13,7 +13,7 @@ public class ConsoleView extends JFrame {
     private ChessModel model;
     private GameView gameView;
     private GameController controller;
-    private JLabel turnoLabel;
+    private JLabel turnLabel;
 
     /**
      * Construtor da janela principal. Recebe o modelo já pronto (novo ou carregado).
@@ -31,7 +31,7 @@ public class ConsoleView extends JFrame {
         this.controller.setGameView(gameView);
         this.gameView.setController(controller);
 
-        setJMenuBar(createMenuBar()); // cria o turnoLabel
+        setJMenuBar(createMenuBar()); // cria o turnLabel
         updateTurn();                 // agora seguro
         add(gameView);
 
@@ -56,8 +56,8 @@ public class ConsoleView extends JFrame {
         gameMenu.add(loadMatch);
         menuBar.add(gameMenu);
 
-        turnoLabel = new JLabel(); // agora inicializada
-        menuBar.add(turnoLabel);
+        turnLabel = new JLabel(); // agora inicializada
+        menuBar.add(turnLabel);
 
         return menuBar;
     }
@@ -67,7 +67,7 @@ public class ConsoleView extends JFrame {
      */
     public void updateTurn() {
         String cor = model.isWhiteTurn() ? "brancas" : "pretas";
-        turnoLabel.setText("Turno de " + cor);
+        turnLabel.setText("Turno de " + cor);
     }
     
     /**
