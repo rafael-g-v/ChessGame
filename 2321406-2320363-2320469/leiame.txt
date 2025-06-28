@@ -1,0 +1,4 @@
+Nomes:
+Dante Navaza : 2321406 Breno Andrade : 2320363 Rafael Chesz : 2320469
+
+A classe Main (localizada no arquivo Main.java) dentro do pacote main contém o metodo main. Para rodar o projeto basta executar o Main.java como aplicacao java
