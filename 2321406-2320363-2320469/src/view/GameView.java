@@ -11,7 +11,6 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.io.*;
 
 /**
  * Classe responsável pela visualização do tabuleiro de xadrez.
@@ -187,19 +186,25 @@ public class GameView extends JPanel {
         }
 
         JPopupMenu menu = new JPopupMenu();
-        JMenuItem salvarEVoltar = new JMenuItem("Salvar e Voltar");
 
-        salvarEVoltar.addActionListener(e -> {
+        // Item "Salvar partida"
+        JMenuItem salvarItem = new JMenuItem("Salvar partida");
+        salvarItem.addActionListener(e -> {
             if (controller != null) {
-                boolean salvo = controller.salvarPartida(this);
-                if (salvo) {
-                    SwingUtilities.getWindowAncestor(this).dispose(); // Fecha janela atual
-                    new StartView(); // Abre a tela inicial
-                }
+                controller.salvarPartida(this);
             }
         });
 
-        menu.add(salvarEVoltar);
+        // Item "Voltar sem salvar"
+        JMenuItem voltarItem = new JMenuItem("Voltar sem salvar");
+        voltarItem.addActionListener(e -> {
+            SwingUtilities.getWindowAncestor(this).dispose(); // Fecha janela atual
+            new StartView(); // Abre a tela inicial
+        });
+
+        menu.add(salvarItem);
+        menu.add(voltarItem);
+
         menu.show(this, x, y);
     }
 }
