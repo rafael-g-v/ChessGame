@@ -201,9 +201,20 @@ public class GameView extends JPanel {
             SwingUtilities.getWindowAncestor(this).dispose(); // Fecha janela atual
             new StartView(); // Abre a tela inicial
         });
+        
+        // Terminar o jogo por iniciativa do jogador
+        JMenuItem desistirItem = new JMenuItem("Desistir");
+        desistirItem.addActionListener(e -> {
+            if (controller != null) {
+                controller.desistir();
+            }
+        });
 
         menu.add(salvarItem);
         menu.add(voltarItem);
+        
+        menu.addSeparator();
+        menu.add(desistirItem);
 
         menu.show(this, x, y);
     }

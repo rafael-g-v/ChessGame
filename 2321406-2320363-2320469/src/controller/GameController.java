@@ -7,6 +7,7 @@ import observer.Observer;
 
 import view.ConsoleView;
 import view.GameView;
+import view.StartView;
 
 import javax.swing.*;
 
@@ -49,10 +50,22 @@ public class GameController implements Observer{
     public void checkEndOfGame() {
         if (model.isCheckMate()) {
             JOptionPane.showMessageDialog(view, "Xeque-mate! O jogador " + (model.isWhiteTurn() ? "branco" : "preto") + " perdeu.");
-            restartGame();
+            // Fecha a janela atual
+            if (consoleView != null) {
+                consoleView.dispose();
+            }
+
+            // Abre a tela inicial
+            new StartView();
         } else if (model.isStalelMate()) {
             JOptionPane.showMessageDialog(view, "Empate por congelamento!");
-            restartGame();
+            // Fecha a janela atual
+            if (consoleView != null) {
+                consoleView.dispose();
+            }
+
+            // Abre a tela inicial
+            new StartView();
         } else if (consoleView != null) {
             consoleView.updateTurn(); // Atualiza a barra de menu com a cor do próximo turno
         }
@@ -138,5 +151,20 @@ public class GameController implements Observer{
             }
         }
         return null;  // Caso não carregue
+    }
+    
+    public void desistir() {
+        String vencedor = model.isWhiteTurn() ? "pretas" : "brancas";
+        JOptionPane.showMessageDialog(view,
+            "Jogador das " + (model.isWhiteTurn() ? "brancas" : "pretas") +
+            " desistiu!\nVitória das " + vencedor + ".");
+
+        // Fecha a janela atual
+        if (consoleView != null) {
+            consoleView.dispose();
+        }
+
+        // Abre a tela inicial
+        new StartView();
     }
 }
