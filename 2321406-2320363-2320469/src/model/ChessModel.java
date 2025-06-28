@@ -472,7 +472,10 @@ public class ChessModel implements Observable  {
 
         return fen.toString();
     }
-
+    
+ // Método auxiliar que converte uma peça em seu símbolo FEN correspondente.
+ //recebe: piece Peça a ser convertida
+ //retorna: a peça na notação FEN
     private char getFENSymbol(Piece piece) {
         char symbol;
 
@@ -487,6 +490,9 @@ public class ChessModel implements Observable  {
         return piece.isWhite() ? Character.toUpperCase(symbol) : symbol;
     }
 
+ //Carrega um estado de jogo a partir de uma string FEN.
+ //recebe: fen String FEN contendo o estado do jogo a ser carregado
+ //throws: IllegalArgumentException se o formato FEN for inválido
     public void loadFEN(String fen) {
         String[] parts = fen.split(" ");
         if (parts.length < 4) {
@@ -576,29 +582,37 @@ public class ChessModel implements Observable  {
         this.halfmoveClock = (parts.length > 4) ? Integer.parseInt(parts[4]) : 0;
         this.fullMoveNumber = (parts.length > 5) ? Integer.parseInt(parts[5]) : 1;
     }
-    
+
+    //Solicita a exibição do menu de salvamento do jogo.
     public void requestShowSaveMenu() {
         this.showSaveMenuRequested = true;
         notificarObservadores();
     }
-
+    
+     //Verifica se há uma solicitação pendente para exibir o menu de salvamento.
+     //returna: true se o menu de salvamento deve ser exibido, false caso contrário
     public boolean isShowSaveMenuRequested() {
         return showSaveMenuRequested;
     }
 
+    //Limpa a solicitação de exibição do menu de salvamento.
     public void clearShowSaveMenuRequest() {
         this.showSaveMenuRequested = false;
     }
 
+    //Solicita a exibição do menu de promoção de peão.
     public void requestShowPromotionMenu() {
         this.showPromotionMenuRequested = true;
         notificarObservadores();
     }
 
+    //Verifica se há uma solicitação pendente para exibir o menu de promoção.
+    //retorna: true se o menu de promoção deve ser exibido, false caso contrário
     public boolean isShowPromotionMenuRequested() {
         return showPromotionMenuRequested;
     }
 
+    //Limpa a solicitação de exibição do menu de promoção.
     public void clearShowPromotionMenuRequest() {
         this.showPromotionMenuRequested = false;
     }
