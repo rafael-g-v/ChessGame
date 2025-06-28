@@ -97,7 +97,7 @@ public class GameController implements Observer{
 
     //Recebe: componente pai para a caixa de diálogo
     //Retorna: true se salvou com sucesso, false caso contrário
-    public boolean salvarPartida(Component parent) {
+    public boolean saveMatch(Component parent) {
         String fen = model.generateFEN();
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Salvar partida");
@@ -125,7 +125,7 @@ public class GameController implements Observer{
 
     //Recebe: JFrame pai para diálogos
     //Retorna: ChessModel carregado ou null se falhar
-    public ChessModel carregarPartidaViaArquivo(JFrame parent) {
+    public ChessModel loadMatchByFile(JFrame parent) {
         JFileChooser fileChooser = new JFileChooser();
         int result = fileChooser.showOpenDialog(parent);
 
@@ -155,7 +155,7 @@ public class GameController implements Observer{
     
     // Função responsável por declarar o vencedor a partir do turno e
     // retornar a mensagem de vitória para o jogador oposto.
-    public void desistir() {
+    public void desist() {
         String vencedor = model.isWhiteTurn() ? "pretas" : "brancas";
         JOptionPane.showMessageDialog(view,
             "Jogador das " + (model.isWhiteTurn() ? "brancas" : "pretas") +

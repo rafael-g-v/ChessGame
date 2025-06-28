@@ -49,11 +49,11 @@ public class ConsoleView extends JFrame {
         newGame.addActionListener(e -> controller.restartGame());
 
 
-        JMenuItem carregarPartida = new JMenuItem("Carregar Partida");
-        carregarPartida.addActionListener(e -> carregarPartida());
+        JMenuItem loadMatch = new JMenuItem("Carregar Partida");
+        loadMatch.addActionListener(e -> loadMatch());
 
         gameMenu.add(newGame);
-        gameMenu.add(carregarPartida);
+        gameMenu.add(loadMatch);
         menuBar.add(gameMenu);
 
         turnoLabel = new JLabel(); // agora inicializada
@@ -85,8 +85,8 @@ public class ConsoleView extends JFrame {
     /**
      * Função correspondente para acessar a função de carregar a partida
      */
-    private void carregarPartida() {
-        ChessModel newModel = controller.carregarPartidaViaArquivo(this);
+    private void loadMatch() {
+        ChessModel newModel = controller.loadMatchByFile(this);
         if (newModel != null) {
             dispose();
             new ConsoleView(newModel);

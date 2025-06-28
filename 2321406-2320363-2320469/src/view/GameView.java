@@ -188,33 +188,33 @@ public class GameView extends JPanel {
         JPopupMenu menu = new JPopupMenu();
 
         // Item "Salvar partida"
-        JMenuItem salvarItem = new JMenuItem("Salvar partida");
-        salvarItem.addActionListener(e -> {
+        JMenuItem saveItem = new JMenuItem("Salvar partida");
+        saveItem.addActionListener(e -> {
             if (controller != null) {
-                controller.salvarPartida(this);
+                controller.saveMatch(saveItem);
             }
         });
 
         // Item "Voltar sem salvar"
-        JMenuItem voltarItem = new JMenuItem("Voltar sem salvar");
-        voltarItem.addActionListener(e -> {
+        JMenuItem returnItem = new JMenuItem("Voltar sem salvar");
+        returnItem.addActionListener(e -> {
             SwingUtilities.getWindowAncestor(this).dispose(); // Fecha janela atual
             new StartView(); // Abre a tela inicial
         });
         
         // Terminar o jogo por iniciativa do jogador
-        JMenuItem desistirItem = new JMenuItem("Desistir");
-        desistirItem.addActionListener(e -> {
+        JMenuItem desistItem = new JMenuItem("Desistir");
+        desistItem.addActionListener(e -> {
             if (controller != null) {
-                controller.desistir();
+                controller.desist();
             }
         });
 
-        menu.add(salvarItem);
-        menu.add(voltarItem);
+        menu.add(saveItem);
+        menu.add(returnItem);
         
         menu.addSeparator();
-        menu.add(desistirItem);
+        menu.add(desistItem);
 
         menu.show(this, x, y);
     }
