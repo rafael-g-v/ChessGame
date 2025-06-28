@@ -153,6 +153,8 @@ public class GameController implements Observer{
         return null;  // Caso não carregue
     }
     
+    // Função responsável por declarar o vencedor a partir do turno e
+    // retornar a mensagem de vitória para o jogador oposto.
     public void desistir() {
         String vencedor = model.isWhiteTurn() ? "pretas" : "brancas";
         JOptionPane.showMessageDialog(view,

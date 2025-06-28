@@ -69,6 +69,11 @@ public class ConsoleView extends JFrame {
         String cor = model.isWhiteTurn() ? "brancas" : "pretas";
         turnoLabel.setText("Turno de " + cor);
     }
+    
+    /**
+     * Responsável por chamar e declarar a classe controller dentro da View
+     */
+    
     public void setController(GameController controller) {
         this.controller = controller;
         if (gameView != null) {
@@ -77,6 +82,9 @@ public class ConsoleView extends JFrame {
         }
     }
     
+    /**
+     * Função correspondente para acessar a função de carregar a partida
+     */
     private void carregarPartida() {
         ChessModel newModel = controller.carregarPartidaViaArquivo(this);
         if (newModel != null) {
@@ -88,6 +96,10 @@ public class ConsoleView extends JFrame {
     public void setModel(ChessModel model) {
         this.model = model;
     }
+    
+    /**
+     * Função declarativa da GameView e sua reinicialização
+     */
     
     public void setGameView(GameView gameView) {
         if (this.gameView != null) {
