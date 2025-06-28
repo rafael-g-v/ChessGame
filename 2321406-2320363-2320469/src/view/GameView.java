@@ -173,7 +173,7 @@ public class GameView extends JPanel {
 
     /**
      * Permite atualizar o modelo associado ao painel.
-     * @param model nova instância do modelo do jogo
+     * model nova instância do modelo do jogo
      */
     public void setModel(ChessModel model) {
         this.model = model;

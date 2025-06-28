@@ -7,6 +7,7 @@ import controller.GameController;
 
 public class StartView extends JFrame {
     public StartView() {
+    	// Padronizando formato da janela
         super("Início - Jogo de Xadrez");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(400, 200);
