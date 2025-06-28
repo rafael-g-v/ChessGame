@@ -80,26 +80,8 @@ public class ConsoleView extends JFrame {
     private void carregarPartida() {
         ChessModel newModel = controller.carregarPartidaViaArquivo(this);
         if (newModel != null) {
-            this.model = newModel;
-
-            // Remove o GameView antigo
-            remove(gameView);
-
-            // Cria um novo GameView vinculado ao novo modelo
-            gameView = new GameView(newModel);
-
-            // Atualiza o controller para o novo modelo e nova view
-            controller = new GameController(newModel);
-            controller.setConsoleView(this);
-            controller.setGameView(gameView);
-            gameView.setController(controller);
-
-            // Adiciona o novo GameView na tela
-            add(gameView);
-
-            updateTurn();
-            revalidate();
-            repaint();
+            dispose();
+            new ConsoleView(newModel);
         }
     }
     

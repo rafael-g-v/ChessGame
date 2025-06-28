@@ -29,13 +29,12 @@ public class StartView extends JFrame {
 
         // Carregar FEN de arquivo .txt
         loadFENFileBtn.addActionListener(e -> {
-            GameController controller = new GameController(ChessModel.getInstance());
-            ChessModel loadedModel = controller.carregarPartidaViaArquivo(this);
+            GameController tempController = new GameController(ChessModel.getInstance());
+            ChessModel loadedModel = tempController.carregarPartidaViaArquivo(this);
+
             if (loadedModel != null) {
                 dispose();
-                ConsoleView view = new ConsoleView(loadedModel);
-                controller.setConsoleView(view);
-                view.setController(controller);
+                new ConsoleView(loadedModel);
             }
         });
 
