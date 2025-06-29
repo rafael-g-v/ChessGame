@@ -37,7 +37,7 @@ public class GameController implements Observer{
     //Recebe: Observable que originou a notificação
     //Ação: Atualiza UI e verifica fim de jogo
     @Override
-    public void notificar(Observable o) {
+    public void notify(Observable o) {
         SwingUtilities.invokeLater(() -> {
             if (view != null) view.repaint(); // Atualiza tabuleiro
             if (consoleView != null) consoleView.updateTurn();
