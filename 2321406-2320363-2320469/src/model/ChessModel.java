@@ -43,7 +43,7 @@ public class ChessModel implements Observable  {
     // Define um tabuleiro customizado. Usado para setups específicos ou testes.
     public void setBoard(Board customBoard) {
         this.board = customBoard;
-        notificarObservadores();
+        notifyObservers();
     }
 
     // Retorna o tabuleiro atual do modelo.
@@ -132,7 +132,7 @@ public class ChessModel implements Observable  {
             if (piece instanceof Pawn) {
                 if ((piece.isWhite() && target.row == 0) || (!piece.isWhite() && target.row == 7)) {
                     board.movePiece(selectedPiecePos, target);  // Move peão para a última linha
-                    notificarObservadores();
+                    notifyObservers();
                     pendingPromotionPos = target;
                     selectedPiecePos = null;
                     return true;
@@ -141,7 +141,7 @@ public class ChessModel implements Observable  {
             
             // Move a peça principal
             board.movePiece(selectedPiecePos, target);
-            notificarObservadores();
+            notifyObservers();
             selectedPiecePos = null;
             whiteTurn = !whiteTurn;
             
@@ -314,7 +314,7 @@ public class ChessModel implements Observable  {
         }
 
         board.setPiece(pendingPromotionPos.row, pendingPromotionPos.col, newPiece);
-        notificarObservadores();
+        notifyObservers();
         pendingPromotionPos = null;
         whiteTurn = !whiteTurn;
         return true;
@@ -529,7 +529,7 @@ public class ChessModel implements Observable  {
             }
         }
 
-        notificarObservadores();
+        notifyObservers();
         this.whiteTurn = turnPart.equals("w");
 
         // castling rights → set hasMoved false se direito existe
@@ -586,7 +586,7 @@ public class ChessModel implements Observable  {
     //Solicita a exibição do menu de salvamento do jogo.
     public void requestShowSaveMenu() {
         this.showSaveMenuRequested = true;
-        notificarObservadores();
+        notifyObservers();
     }
     
      //Verifica se há uma solicitação pendente para exibir o menu de salvamento.
@@ -603,7 +603,7 @@ public class ChessModel implements Observable  {
     //Solicita a exibição do menu de promoção de peão.
     public void requestShowPromotionMenu() {
         this.showPromotionMenuRequested = true;
-        notificarObservadores();
+        notifyObservers();
     }
 
     //Verifica se há uma solicitação pendente para exibir o menu de promoção.

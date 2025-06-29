@@ -5,12 +5,12 @@ import java.util.ArrayList;
 
 public interface Observable {
 	/* Implementação default para evitar código repetido */
-    List<Observer> OBSERVADORES = new ArrayList<>();
+    List<Observer> OBSERVERS = new ArrayList<>();
 
-    default void addObservador(Observer o)   { OBSERVADORES.add(o); }
-    default void remObservador(Observer o)   { OBSERVADORES.remove(o); }
-    default void notificarObservadores()         { 
-        for (Observer ob : List.copyOf(OBSERVADORES))
-            ob.notificar(this);
+    default void addObserver(Observer o)   { OBSERVERS.add(o); }
+    default void remObserver(Observer o)   { OBSERVERS.remove(o); }
+    default void notifyObservers()         { 
+        for (Observer ob : List.copyOf(OBSERVERS))
+            ob.notify(this);
     }
 }

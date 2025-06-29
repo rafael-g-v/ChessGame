@@ -34,9 +34,9 @@ public class ChessModelObserverTest {
         model.setWhiteTurn(true);
 
         // Registra um observer que só marca quando for notificado
-        model.addObservador(new Observer() {
+        model.addObserver(new Observer() {
             @Override
-            public void notificar(Observable o) {
+            public void notify(Observable o) {
                 observerNotificado = true;
             }
         });
@@ -60,9 +60,9 @@ public class ChessModelObserverTest {
         model.setBoard(board);
         model.setWhiteTurn(true);
 
-        model.addObservador(new Observer() {
+        model.addObserver(new Observer() {
             @Override
-            public void notificar(Observable o) {
+            public void notify(Observable o) {
                 observerNotificado = true;
             }
         });
@@ -92,9 +92,9 @@ public class ChessModelObserverTest {
         model.setBoard(board);
         model.setWhiteTurn(true);
 
-        model.addObservador(new Observer() {
+        model.addObserver(new Observer() {
             @Override
-            public void notificar(Observable o) {
+            public void notify(Observable o) {
                 observerNotificado = true;
             }
         });
