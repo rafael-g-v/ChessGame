@@ -23,7 +23,7 @@ public class ChessModelObserverTest {
     }
 
     @Test(timeout = 2000)
-    public void observerNotificadoAoMoverPeca() {
+    public void observerNotifiedAfterMovingPiece() {
         Board board = new Board(true);
         board.clear();
 
@@ -50,7 +50,7 @@ public class ChessModelObserverTest {
     }
 
     @Test(timeout = 2000)
-    public void observerNotificadoAoPromoverPeao() {
+    public void observerNotifiedAfterPromotingPawn() {
         Board board = new Board(true);
         board.clear();
 
@@ -85,7 +85,7 @@ public class ChessModelObserverTest {
     }
 
 	@Test(timeout = 2000)
-    public void observerNaoNotificadoSemMudancaDeEstado() {
+    public void observerNotNotifiedWhithoutChangingState() {
         Board board = new Board(true);
         board.clear();
 
